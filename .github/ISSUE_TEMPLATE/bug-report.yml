@@ -1,0 +1,74 @@
+name: "Bug Report"
+description: "Report issues related to HTML, Jekyll, documentation, diagrams, or site rendering."
+title: "[BUG] <Short description of the issue>"
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Bug Report
+        Use this template to report issues in the portfolio documentation, diagrams, HTML, CSS, or Jekyll rendering.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "1. Description of the Issue"
+      description: "Provide a clear and concise description of the problem."
+      placeholder: "Example: The UC-LOGIN-01 page fails to load due to a Liquid include error."
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: "2. Steps to Reproduce"
+      description: "List the steps needed to reproduce the issue."
+      placeholder: |
+        1. Navigate to /docs/use-cases/UC-LOGIN-01.html
+        2. Observe Liquid error in console
+        3. Page fails to render include
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: "3. Expected Behavior"
+      description: "Describe what you expected to happen."
+      placeholder: "The UC page should render the include correctly and display the use case content."
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: "4. Actual Behavior"
+      description: "Describe what actually happened."
+      placeholder: "Liquid error: Could not locate include file 'components/uc-header.html'."
+
+  - type: textarea
+    id: affected_files
+    attributes:
+      label: "5. Affected Files or Pages"
+      description: "List the files, pages, or diagrams impacted."
+      placeholder: |
+        - docs/use-cases/UC-LOGIN-01.html
+        - _includes/components/uc-header.html
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: "6. Environment"
+      description: "Where did you observe the issue?"
+      placeholder: |
+        - GitHub Pages build
+        - Local Jekyll serve
+        - Browser: Chrome 124
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: "7. Screenshots / Attachments"
+      description: "Add screenshots, error messages, or diagram exports."
+      placeholder: "Drag and drop images here."
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: "8. Additional Notes"
+      description: "Add any extra context or related issues."
+      placeholder: "Related to Issue #42"

@@ -1,0 +1,84 @@
+name: "Documentation Task"
+description: "Create, update, or refine documentation, specifications, or written artifacts."
+title: "[DOC] <Short description of documentation task>"
+labels: ["documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Documentation Task
+        Use this template to track updates to BRs, UCs, FS, Data Specs, Test Cases, or any written documentation.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: "1. Summary of Task"
+      description: "Describe the documentation work required."
+      placeholder: "Example: Update BR-PROG-07 wording for clarity and align FS-PROG-DETAIL accordingly."
+
+  - type: textarea
+    id: related_brs
+    attributes:
+      label: "2. Related Business Requirements (BR)"
+      description: "List any BRs that require updates or are impacted."
+      placeholder: "- BR-PROG-07\n- BR-USER-02"
+
+  - type: textarea
+    id: related_ucs
+    attributes:
+      label: "3. Related Use Cases (UC)"
+      description: "List any UCs that need updates."
+      placeholder: "- UC-PROG-03\n- UC-LOGIN-01"
+
+  - type: textarea
+    id: related_fs
+    attributes:
+      label: "4. Related Functional Specification Sections (FS)"
+      description: "Identify FS sections that must be updated."
+      placeholder: "- FS-PROG-DETAIL\n- FS-NAVIGATION"
+
+  - type: textarea
+    id: related_data
+    attributes:
+      label: "5. Related Data Specification Fields"
+      description: "List data elements or YAML structures affected."
+      placeholder: "- program.duration\n- user.profileImageUrl"
+
+  - type: textarea
+    id: related_tests
+    attributes:
+      label: "6. Related Test Cases"
+      description: "Identify test cases that need updating or creation."
+      placeholder: "- TC-PROG-DETAIL-01\n- TC-LOGIN-VALID-02"
+
+  - type: textarea
+    id: affected_docs
+    attributes:
+      label: "7. Affected Documentation Artifacts"
+      description: "Specify which documents or folders are impacted."
+      placeholder: |
+        - BR folder
+        - UC folder
+        - FS folder
+        - Data Specs
+        - Test Cases
+        - Architecture docs
+        - README sections
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: "8. Acceptance Criteria"
+      description: "Define what 'done' looks like."
+      placeholder: |
+        - All referenced documents updated
+        - Cross-references validated
+        - Terminology consistent with Visual Grammar
+        - No broken links or missing artifacts
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: "9. Notes / Attachments"
+      description: "Add diagrams, screenshots, links, or additional context."
+      placeholder: "Attach images or reference related issues."

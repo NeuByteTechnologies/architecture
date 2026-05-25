@@ -1,0 +1,85 @@
+name: "Enhancement Request"
+description: "Request an improvement to existing documentation, diagrams, specifications, or shared components."
+title: "[ENH] <Short description of enhancement>"
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Enhancement Summary
+        Provide a clear description of the improvement needed and why it is required.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: "1. Summary of Enhancement"
+      description: "What needs to be improved and why?"
+      placeholder: "Example: Update Program Detail UI Spec to align with BR-PROG-07 and adjust Data Spec fields."
+
+  - type: textarea
+    id: related_brs
+    attributes:
+      label: "2. Related Business Requirements (BR)"
+      description: "List any BRs impacted by this enhancement."
+      placeholder: "- BR-PROG-07\n- BR-USER-02"
+
+  - type: textarea
+    id: related_ucs
+    attributes:
+      label: "3. Related Use Cases (UC)"
+      description: "List any UCs that require updates."
+      placeholder: "- UC-PROG-03\n- UC-LOGIN-01"
+
+  - type: textarea
+    id: related_fs
+    attributes:
+      label: "4. Related Functional Specification Sections (FS)"
+      description: "Identify FS sections that must be updated."
+      placeholder: "- FS-PROG-DETAIL\n- FS-NAVIGATION"
+
+  - type: textarea
+    id: related_data
+    attributes:
+      label: "5. Related Data Specification Fields"
+      description: "List data elements, YAML structures, or schema fields affected."
+      placeholder: "- program.duration\n- user.profileImageUrl"
+
+  - type: textarea
+    id: related_tests
+    attributes:
+      label: "6. Related Test Cases"
+      description: "Identify test cases that need updating or creation."
+      placeholder: "- TC-PROG-DETAIL-01\n- TC-LOGIN-VALID-02"
+
+  - type: textarea
+    id: affected_components
+    attributes:
+      label: "7. Affected Components"
+      description: "Select or describe which shared components are impacted."
+      placeholder: |
+        - HTML includes
+        - CSS (neubyte.css)
+        - YAML data files
+        - Architecture pages
+        - Diagrams / Visual Grammar
+        - Navigation
+        - Print stylesheet
+        - Common code
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: "8. Acceptance Criteria"
+      description: "Define what 'done' looks like."
+      placeholder: |
+        - All related BR/UC/FS/Data/Test Case references updated
+        - Diagrams revised to match Visual Grammar
+        - Includes updated without breaking other pages
+        - Documentation validated for consistency
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: "9. Notes / Attachments"
+      description: "Add diagrams, screenshots, links, or additional context."
+      placeholder: "Attach images or reference related issues."

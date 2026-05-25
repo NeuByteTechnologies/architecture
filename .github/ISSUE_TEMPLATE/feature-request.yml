@@ -1,0 +1,76 @@
+name: "Feature Request"
+description: "Request a new documentation artifact, diagram, specification section, or site capability."
+title: "[FEATURE] <Short description of requested feature>"
+labels: ["feature"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Feature Request
+        Use this template to propose new documentation, diagrams, specification sections, or structural additions to the portfolio.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: "1. Summary of the Feature"
+      description: "Describe the new feature you want added."
+      placeholder: "Example: Add a new Use Case for Program Sharing."
+
+  - type: textarea
+    id: rationale
+    attributes:
+      label: "2. Rationale / Why This Feature Matters"
+      description: "Explain why this feature should exist and what gap it fills."
+      placeholder: |
+        - Visitor feedback requested more clarity on program sharing
+        - Current documentation does not cover this workflow
+
+  - type: textarea
+    id: related_brs
+    attributes:
+      label: "3. Related Business Requirements (BR)"
+      description: "List BRs that this new feature supports or requires."
+      placeholder: "- BR-PROG-10 (Program Sharing)"
+
+  - type: textarea
+    id: related_ucs
+    attributes:
+      label: "4. Related Use Cases (UC)"
+      description: "List UCs that this feature will create or impact."
+      placeholder: "- UC-PROG-SHARE-01 (New)"
+
+  - type: textarea
+    id: related_fs
+    attributes:
+      label: "5. Related Functional Specification Sections (FS)"
+      description: "Identify FS sections that will need to be created or updated."
+      placeholder: "- FS-PROG-SHARE"
+
+  - type: textarea
+    id: required_artifacts
+    attributes:
+      label: "6. Required Artifacts"
+      description: "Specify what needs to be created."
+      placeholder: |
+        - New Use Case document
+        - New Sequence Diagram
+        - New Data Spec fields
+        - New Architecture page
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: "7. Acceptance Criteria"
+      description: "Define what 'done' looks like."
+      placeholder: |
+        - All new artifacts created
+        - Cross-references added to BR/UC/FS/Data
+        - Diagrams follow Visual Grammar
+        - Linked in navigation and README
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: "8. Additional Notes"
+      description: "Add sketches, references, or related issues."
+      placeholder: "Related to Visitor Log feedback"

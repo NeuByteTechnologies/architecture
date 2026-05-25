@@ -1,0 +1,99 @@
+name: "Administrative Task"
+description: "For organizational, operational, or standards-related tasks such as repo setup, migration, cleanup, or governance work."
+title: "[Admin] <short description>"
+labels:
+  - Standard
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🛠️ Administrative Task
+        Use this template for organizational or operational work that supports the NeuByte ecosystem.  
+        Examples include:
+        - Standards maintenance  
+        - Project setup  
+        - Repository setup  
+        - Issue migration  
+        - File movement  
+        - Cleanup and restructuring  
+        - Governance tasks  
+
+  - type: input
+    id: purpose
+    attributes:
+      label: Purpose
+      description: What is the goal of this administrative task?
+      placeholder: "Describe the purpose of this task"
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: What is included in this task? What is out of scope?
+      placeholder: "Define the boundaries of the work"
+    validations:
+      required: true
+
+  - type: textarea
+    id: repos
+    attributes:
+      label: Repositories Affected
+      description: List all repositories involved in this task.
+      placeholder: |
+        - portfolio
+        - resume-system
+        - design-system
+        - api-backend
+        - architecture
+        - standards
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Complete
+      description: Provide a clear sequence of steps required to complete this task.
+      placeholder: |
+        1. Identify affected files
+        2. Move files to correct repo
+        3. Update links
+        4. Add to project
+        5. Validate structure
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: Define what “done” looks like.
+      placeholder: |
+        - All files moved to correct repo
+        - All links updated
+        - Repo structure validated
+        - Issue added to project
+    validations:
+      required: true
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: List any related Issues, Discussions, or standards.
+      placeholder: |
+        - #123 (Standards update)
+        - Discussion: https://github.com/NeuByteTechnologies/standards/discussions/45
+    validations:
+      required: false
+
+  - type: textarea
+    id: risks
+    attributes:
+      label: Risks or Considerations
+      description: Identify any risks, blockers, or important notes.
+      placeholder: "List any potential risks or considerations"
+    validations:
+      required: false

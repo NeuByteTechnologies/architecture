@@ -1,0 +1,107 @@
+name: "Diagram Task"
+description: "Create, update, or refine diagrams using the Visual Grammar and stencil system."
+title: "[DIAG] <Short description of diagram task>"
+labels: ["diagram"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Diagram Task
+        Use this template for creating or updating diagrams such as Activity, Sequence, Swimlane, DFD, UI Flow, Domain Model, or Architecture diagrams.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: "1. Summary of Diagram Work"
+      description: "Describe the diagram work required."
+      placeholder: "Example: Rebuild the Exercise Program Sequence Diagram using updated Visual Grammar spacing rules."
+
+  - type: dropdown
+    id: diagram_type
+    attributes:
+      label: "2. Diagram Type"
+      description: "Select the type of diagram involved."
+      options:
+        - Activity Diagram
+        - Sequence Diagram
+        - Swimlane Diagram
+        - Data Flow Diagram (DFD)
+        - UI Flow Diagram
+        - Domain Model
+        - Architecture Diagram
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: related_brs
+    attributes:
+      label: "3. Related Business Requirements (BR)"
+      description: "List BRs that influence or are represented in this diagram."
+      placeholder: "- BR-PROG-07\n- BR-USER-02"
+
+  - type: textarea
+    id: related_ucs
+    attributes:
+      label: "4. Related Use Cases (UC)"
+      description: "List UCs that this diagram supports or visualizes."
+      placeholder: "- UC-PROG-03\n- UC-LOGIN-01"
+
+  - type: textarea
+    id: related_fs
+    attributes:
+      label: "5. Related Functional Specification Sections (FS)"
+      description: "Identify FS sections that this diagram must align with."
+      placeholder: "- FS-PROG-DETAIL\n- FS-NOTIFICATIONS"
+
+  - type: textarea
+    id: visual_grammar
+    attributes:
+      label: "6. Visual Grammar Considerations"
+      description: "Specify any Visual Grammar rules that apply (spacing, alignment, shapes, colors, connectors)."
+      placeholder: |
+        - 24px lane padding
+        - Standard actor icons
+        - Consistent arrowheads
+        - Label alignment rules
+
+  - type: textarea
+    id: stencil_elements
+    attributes:
+      label: "7. Required Stencil Elements"
+      description: "List any stencil components needed for this diagram."
+      placeholder: |
+        - Process block
+        - Decision diamond
+        - Data store
+        - Swimlane container
+        - Actor icon
+
+  - type: textarea
+    id: affected_files
+    attributes:
+      label: "8. Affected Files / Locations"
+      description: "List the diagram files or folders impacted."
+      placeholder: |
+        - docs/diagrams/exercise-programs/sequence.svg
+        - docs/architecture/dfd-level1.png
+        - stencil-library/swimlane-elements.svg
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: "9. Acceptance Criteria"
+      description: "Define what 'done' looks like."
+      placeholder: |
+        - Diagram rebuilt using Visual Grammar
+        - All elements aligned to stencil rules
+        - BR/UC/FS alignment validated
+        - Exported as SVG and PNG
+        - Linked in documentation
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: "10. Notes / Attachments"
+      description: "Add sketches, screenshots, references, or related issues."
+      placeholder: "Attach images or reference related issues."
