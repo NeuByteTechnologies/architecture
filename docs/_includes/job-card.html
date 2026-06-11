@@ -1,0 +1,22 @@
+<section class="job-card">
+  <div class="job-header">
+    <h3 class="job-title">{{ include.role }} — {{ include.company }}</h3>
+    <span class="job-dates">{{ include.start }}–{{ include.end }}</span>
+  </div>
+
+  {% if include.location %}
+    <p class="job-location">{{ include.location }}</p>
+  {% endif %}
+
+  {% if include.summary %}
+    <p class="job-summary">{{ include.summary }}</p>
+  {% endif %}
+
+  {% if include.bullets %}
+    <ul class="job-bullets">
+      {% for item in include.bullets %}
+        <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</section>

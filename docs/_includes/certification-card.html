@@ -1,0 +1,10 @@
+<section class="cert-card">
+  <div class="cert-header">
+    <h3 class="cert-name">{{ include.name }}</h3>
+    <span class="cert-meta">{{ include.issuer }} — {{ include.year }}</span>
+  </div>
+
+  {% if include.summary %}
+    <p class="cert-summary">{{ include.summary }}</p>
+  {% endif %}
+</section>

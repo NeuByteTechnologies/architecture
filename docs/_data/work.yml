@@ -1,0 +1,119 @@
+- company: "Melaleuca \u2013 The Wellness Company"
+  role: Senior Systems Analyst / Data Systems Engineer
+  location: Idaho Falls, Idaho
+  start: May 2018
+  end: January 2026
+  summary: "Supported modernization of enterprise data workflows by analyzing legacy\
+    \ ETL processes, documenting system behavior, and implementing SQL\u2011driven\
+    \ transformations. Partnered with marketing, finance, and engineering teams to\
+    \ improve data quality, reporting accuracy, and cross\u2011system integrations."
+  bullets:
+  - Analyzed and modernized SSIS workflows supporting credit card recovery, improving
+    order retention and recovering ~$20K per month across multiple countries.
+  - Designed and maintained data integration pipelines sending customer and order
+    data to Salesforce, enabling targeted email/SMS campaigns and improving customer
+    engagement.
+  - Integrated Google Analytics web data into BigQuery, enabling more accurate segmentation
+    and campaign performance analysis.
+  - Documented and maintained data warehouse ETL processes, including staging, cleansing,
+    and dimensional modeling.
+  - "Developed and optimized T\u2011SQL stored procedures and transformations supporting\
+    \ fact and dimension tables."
+  - Performed data validation, profiling, and query optimization to ensure accuracy,
+    reliability, and efficient execution plans.
+- company: Motorola Solutions
+  role: "Staff Engineer I \u2013 Analytics & Systems Integration"
+  location: Temecula, CA
+  start: March 2018
+  end: May 2018
+  summary: Supported analytics and data integration systems for public safety communications
+    following the acquisition of Airbus DS Communications. Ensured continuity of reporting,
+    data flows, and system behavior during organizational transition.
+  bullets:
+  - "Maintained VESTA Analytics data workflows and reporting components during post\u2011\
+    acquisition integration."
+  - Analyzed system behavior and data flows to ensure uninterrupted reporting for
+    public safety agencies.
+- company: Airbus DS Communications
+  role: Software Designer / Systems Analyst
+  location: Temecula, CA
+  start: February 2014
+  end: March 2018
+  summary: Enhanced analytics and reporting platforms for public safety systems by
+    analyzing legacy components, modernizing SSIS/SSAS workflows, and improving system
+    reliability and user experience.
+  bullets:
+  - Upgraded and enhanced the VESTA Analytics web application, improving usability
+    and reporting clarity.
+  - Modernized SSIS Data Flow components, improving error handling and operational
+    stability.
+  - Upgraded SSAS cubes to improve reporting performance and data processing efficiency.
+- company: NAMM California
+  role: Business Systems Analyst
+  location: Ontario, California
+  start: August 2013
+  end: March 2014
+  summary: "Supported ICD\u201110 remediation by analyzing legacy applications, documenting\
+    \ requirements, and ensuring system readiness for regulatory compliance."
+  bullets:
+  - "Analyzed applications, databases, and reports to identify ICD\u20119 \u2192 ICD\u2011\
+    10 upgrade requirements."
+  - Documented business processes, system workflows, and functional specifications
+    for remediation.
+  - Provided production support for VB.NET applications and Crystal Reports.
+- company: NeuByte Technologies
+  role: Principal Systems Analyst / Software Engineer (Consultant)
+  location: Temecula, CA
+  start: June 2012
+  end: February 2014
+  summary: "Delivered custom business and web solutions as a consulting entity, supporting\
+    \ requirements analysis, system design, and data\u2011driven application development."
+  bullets:
+  - Designed and developed a custom CRM system using ASP.NET, SQL Server, and Entity
+    Framework.
+  - Analyzed business workflows and translated requirements into technical specifications
+    and UI components.
+- company: CareFusion / Cardinal Health
+  role: "Business Systems Analyst \u2013 Data Warehousing & Analytics"
+  location: San Diego, CA
+  start: July 2009
+  end: June 2012
+  summary: Supported enterprise data warehousing initiatives using Kimball methodologies,
+    Lean Six Sigma, and structured requirements analysis. Contributed to modernization
+    of reporting and analytics platforms across operational and financial domains.
+  bullets:
+  - Developed and enhanced data warehouses and data marts using star schema design.
+  - Analyzed data workflows and implemented ETL processes to improve data quality
+    and accessibility.
+  - Supported Operational Excellence initiatives through process analysis and Lean
+    Six Sigma practices.
+- company: Cardinal Health
+  role: "Senior Business Systems Analyst \u2013 Data & Process Improvement"
+  location: San Diego, CA
+  start: June 2008
+  end: June 2009
+  summary: Focused on data warehousing, ETL analysis, and process improvement using
+    Kimball and Lean Six Sigma methodologies. Supported modernization of reporting
+    and operational systems.
+  bullets:
+  - Analyzed and enhanced ETL workflows supporting enterprise data integration.
+  - Documented system behavior, data flows, and reporting requirements.
+  - Applied Lean Six Sigma principles to improve data and operational processes.
+- company: Early Career Software Engineer / Systems Analyst
+  role: "Various Roles (Web Developer \u2192 Senior Programmer/Analyst)"
+  location: Southern California
+  start: August 1997
+  end: June 2008
+  summary: Progressed through increasingly responsible roles supporting enterprise
+    applications, reporting systems, and financial operations. Contributed to modernization
+    of intranet applications, CRM systems, and reporting workflows across multiple
+    organizations.
+  bullets:
+  - Supported mutual fund trading systems and internal financial applications at LPL
+    Financial.
+  - Developed intranet and operational applications using ASP, ASP.NET, SQL Server,
+    and VB.
+  - "Created reporting solutions using Crystal Reports and SQL\u2011based data extraction."
+  - Customized CRM workflows and developed support tools for enterprise users.
+  - Collaborated with QA, contractors, and business stakeholders to stabilize and
+    enhance systems.

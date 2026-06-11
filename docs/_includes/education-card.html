@@ -1,0 +1,12 @@
+<section class="education-card">
+  <div class="education-header">
+    <h3 class="education-degree">{{ include.degree }}</h3>
+    <span class="education-dates">{{ include.start }}–{{ include.end }}</span>
+  </div>
+
+  <h4 class="education-school">{{ include.school }}</h4>
+
+  {% if include.summary %}
+    <p class="education-summary">{{ include.summary }}</p>
+  {% endif %}
+</section>

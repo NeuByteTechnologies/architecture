@@ -1,0 +1,548 @@
+/* ---------------------------------------------------------
+   NeuByte Color System — Core Variables
+   Unified Design Tokens (CSS is source of truth)
+--------------------------------------------------------- */
+
+:root {
+  /* Grayscale Palette */
+  --nb-gray-0:   #ffffff;
+  --nb-gray-50:  #f7f7f7;
+  --nb-gray-100: #e6e6e6;
+  --nb-gray-200: #cccccc;
+  --nb-gray-300: #b3b3b3;
+  --nb-gray-400: #999999;
+  --nb-gray-500: #808080;
+  --nb-gray-600: #666666;   /* FIXED */
+  --nb-gray-700: #4d4d4d;
+  --nb-gray-800: #333333;   /* FIXED */
+  --nb-gray-900: #1a1a1a;
+  --nb-gray-1000:#000000;
+
+  /* NeuByte Brand Accent */
+  --nb-blue: #0077cc; /* Primary Blue (kept) */
+  --nb-blue-light: #3399ff;
+  --nb-blue-dark: #005fa3;
+
+  /* Semantic Tokens */
+  --nb-bg: var(--nb-gray-0);
+  --nb-surface: var(--nb-gray-50);
+  --nb-surface-alt: var(--nb-gray-100);
+
+  --nb-text: var(--nb-gray-900);
+  --nb-text-muted: var(--nb-gray-600);
+  --nb-text-inverse: var(--nb-gray-0);
+  --nb-text-meta: #808080; /* NEW */
+
+  --nb-border: var(--nb-gray-200);
+  --nb-border-strong: var(--nb-gray-400);
+
+  --nb-accent: var(--nb-blue);
+  --nb-accent-hover: var(--nb-blue-dark);
+
+  /* Stroke rules for diagrams + UI */
+  --nb-stroke-width: 2px; /* Kept */
+  --nb-stroke-color: var(--nb-gray-800);
+
+  /* Arrowhead rules (NEW) */
+  --nb-arrow-stroke-width: 2px;
+  --nb-arrow-stroke-color: var(--nb-stroke-color);
+  --nb-arrowhead-fill: var(--nb-stroke-color);
+
+  /* Spacing Scale (rem-based for accessibility) */
+  --nb-space-1: 0.25rem;
+  --nb-space-2: 0.5rem;
+  --nb-space-3: 0.75rem;
+  --nb-space-4: 1rem;
+  --nb-space-6: 1.5rem;
+  --nb-space-8: 2rem;
+
+  /* Shape spacing (16px) */
+  --nb-shape-spacing: 1rem;
+
+  /* Swimlane padding (24px) */
+  --nb-swimlane-padding: 1.5rem;
+
+  /* Radius */
+  --nb-radius-sm: 4px;
+  --nb-radius-md: 8px;
+  --nb-radius-lg: 12px;
+
+  /* Typography */
+  --nb-font: "Manrope", sans-serif;
+  --nb-font-size: 16px;
+  --nb-line-height: 1.6;
+
+  /* Enforced font weights (NEW) */
+  --nb-font-weight-regular: 400;
+  --nb-font-weight-medium: 500;
+  --nb-font-weight-semibold: 600;
+
+  /* Scroll Bar */
+  --nb-scrollbar: #c7d2e0;
+  --nb-scrollbar-hover: #7ea0c8;
+}
+
+/* ---------------------------------------------------------
+   Base Reset + Typography
+--------------------------------------------------------- */
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--nb-bg);
+  color: var(--nb-text);
+  font-family: var(--nb-font);
+  font-size: var(--nb-font-size);
+  line-height: var(--nb-line-height);
+  font-weight: var(--nb-font-weight-regular); /* NEW */
+}
+
+h1, h2, h3, h4 {
+  color: var(--nb-text);
+  margin-top: var(--nb-space-8);
+  margin-bottom: var(--nb-space-4);
+  font-weight: var(--nb-font-weight-semibold); /* NEW */
+}
+
+p {
+  margin-bottom: var(--nb-space-4);
+  color: var(--nb-text);
+}
+
+/* ---------------------------------------------------------
+   Links
+--------------------------------------------------------- */
+
+a {
+  color: var(--nb-accent);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--nb-accent-hover);
+  text-decoration: underline;
+}
+
+/* ---------------------------------------------------------
+   Surfaces + Cards
+--------------------------------------------------------- */
+
+.nb-card {
+  background: var(--nb-surface);
+  border: 1px solid var(--nb-border);
+  border-radius: var(--nb-radius-md);
+  padding: var(--nb-space-6);
+  margin-bottom: var(--nb-shape-spacing); /* UPDATED */
+}
+
+/* ---------------------------------------------------------
+   Buttons
+--------------------------------------------------------- */
+
+.nb-button {
+  display: inline-block;
+  padding: var(--nb-space-3) var(--nb-space-6);
+  background: var(--nb-accent);
+  color: var(--nb-text-inverse);
+  border-radius: var(--nb-radius-sm);
+  font-weight: var(--nb-font-weight-medium); /* NEW */
+}
+
+.nb-button:hover {
+  background: var(--nb-accent-hover);
+}
+
+/* ---------------------------------------------------------
+   Layout Utilities
+--------------------------------------------------------- */
+
+.nb-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--nb-space-8) var(--nb-space-4);
+}
+
+.nb-grid {
+  display: grid;
+  gap: var(--nb-space-6);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.nb-center {
+  text-align: center;
+}
+
+/* ---------------------------------------------------------
+   Header / Hero
+--------------------------------------------------------- */
+
+.nb-header {
+  padding: var(--nb-space-8) 0;
+  text-align: center;
+  font-weight: var(--nb-font-weight-semibold);
+  text-shadow: 0px 1px 2px rgba(0,0,0,0.25);
+  align-items: center;
+  font-size: 1.5rem;
+  height: 52px;
+}
+
+.nb-logo {
+  width: 120px;
+  margin-bottom: var(--nb-space-4);
+}
+
+nav {
+  background-image: url("NeuByteGrIdMenuBar.svg");
+  background-repeat: no-repeat;
+  background-size: 600px;
+  background-position: center;
+}
+
+nav a {
+  line-height: calc(1em + 6px);
+}
+
+/* ---------------------------------------------------------
+   Footer
+--------------------------------------------------------- */
+
+.site-footer {
+  padding: 2rem 0;
+  text-align: center;
+  color: var(--nb-text-muted);
+}
+
+.site-footer .legal {
+  font-size: 0.875rem;
+  color: var(--nb-text-muted);
+  margin-bottom: 1rem;
+}
+
+.site-footer .social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 1.25rem;
+}
+
+.social-icons {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 1.25rem;
+}
+
+.social-icons svg {
+  width: 24px;
+  height: 24px;
+  fill: var(--nb-text);
+  transition: fill 0.2s ease, transform 0.2s ease;
+}
+
+.social-icons a:hover svg {
+  fill: var(--nb-accent);
+  transform: translateY(-2px);
+}
+
+/* ---------------------------------------------------------
+   Use Case Table
+--------------------------------------------------------- */
+
+.uc-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-family: Manrope, sans-serif;
+}
+
+.uc-table th,
+.uc-table td {
+  border: 1px solid var(--nb-border);
+  padding: 8px 12px;
+  vertical-align: top;
+}
+
+.uc-table th {
+  font-weight: var(--nb-font-weight-semibold);
+  background-color: var(--nb-gray-50);
+  color: var(--nb-gray-900);
+}
+
+/* ---------------------------------------------------------
+   Resume Components
+--------------------------------------------------------- */
+
+.resume-page {
+  width: 860px;
+  margin: 0 auto;
+}
+
+.resume-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  width: 860px;
+}
+
+.resume-name {
+  font-size: 2.2rem;
+  font-weight: var(--nb-font-weight-semibold);
+  margin: 0;
+}
+
+.resume-title {
+  font-size: 1.2rem;
+  color: var(--nb-text-muted);
+  margin: 0.3rem 0 1rem;
+}
+
+.resume-contact span {
+  display: inline-block;
+  margin: 0 0.5rem;
+  font-size: 0.95rem;
+}
+
+.resume-contact a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.resume-summary {
+  margin: 1.5rem 0 2rem;
+  padding: 1.25rem 1.5rem;
+  background: #fafafa;
+  border-left: 4px solid var(--nb-accent);
+  border-radius: 4px;
+  width: 860px;
+}
+
+.resume-summary p {
+  margin: 0;
+  color: var(--nb-text);
+  line-height: 1.6;
+}
+
+/* Resume Scrolling Container */
+.resume-container {
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 1.5rem 2rem;
+  border-radius: 8px;
+  background: var(--nb-gray-0);
+  border: 1px solid var(--nb-border);
+  width: 860px;
+}
+
+.resume-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.resume-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.resume-container::-webkit-scrollbar-thumb {
+  background: var(--nb-scrollbar);
+  border-radius: 4px;
+}
+
+.resume-container:hover::-webkit-scrollbar-thumb {
+  background: var(--nb-blue-light);
+}
+
+.resume-container {
+  scrollbar-width: thin;
+  scrollbar-color: var(--nb-scrollbar) transparent;
+}
+
+/* ----------------------------
+   Job Card
+---------------------------- */
+
+.job-card {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--nb-border-strong);
+  margin-bottom: var(--nb-shape-spacing); /* NEW */
+}
+
+.job-card:last-child {
+  border-bottom: none;
+}
+
+.job-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.job-title {
+  margin: 0;
+  font-weight: var(--nb-font-weight-semibold);
+}
+
+.job-dates {
+  font-size: 0.9rem;
+  color: var(--nb-text-meta); /* UPDATED */
+}
+
+.job-location {
+  margin: 0.25rem 0;
+  font-size: 0.95rem;
+  color: var(--nb-text-meta); /* UPDATED */
+}
+
+.job-summary {
+  margin: 0.5rem 0 0.75rem;
+  color: var(--nb-text-muted);
+}
+
+.job-bullets {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.job-bullets li {
+  margin: 0.25rem 0;
+}
+
+/* ----------------------------
+   Education Card
+---------------------------- */
+
+.education-card {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--nb-border-strong);
+  width: 860px;
+  margin-bottom: var(--nb-shape-spacing); /* NEW */
+}
+
+.education-card:last-child {
+  border-bottom: none;
+}
+
+.education-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.education-degree {
+  margin: 0;
+  font-weight: var(--nb-font-weight-semibold);
+}
+
+.education-dates {
+  font-size: 0.9rem;
+  color: var(--nb-text-meta); /* UPDATED */
+}
+
+.education-school {
+  margin: 0.25rem 0 0.5rem;
+  font-weight: var(--nb-font-weight-medium);
+  color: var(--nb-text);
+}
+
+.education-summary {
+  margin: 0.5rem 0 0.75rem;
+  color: var(--nb-text-muted);
+}
+
+/* ----------------------------
+   Certification Card
+---------------------------- */
+
+.cert-card {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--nb-border-strong);
+  width: 860px;
+  margin-bottom: var(--nb-shape-spacing); /* NEW */
+}
+
+.cert-card:last-child {
+  border-bottom: none;
+}
+
+.cert-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.cert-name {
+  margin: 0;
+  font-weight: var(--nb-font-weight-semibold);
+}
+
+.cert-meta {
+  font-size: 0.9rem;
+  color: var(--nb-text-meta); /* UPDATED */
+}
+
+.cert-summary {
+  margin: 0.5rem 0 0.75rem;
+  color: var(--nb-text-muted);
+}
+
+/* ----------------------------
+   Skill Category
+---------------------------- */
+
+.skill-category {
+  margin-bottom: 1.5rem;
+  width: 860px;
+}
+
+.skill-category-title {
+  margin: 0 0 0.5rem;
+  font-weight: var(--nb-font-weight-semibold);
+}
+
+.skill-list {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.25rem 1rem;
+}
+
+.skill-item {
+  margin: 0;
+  color: var(--nb-text-muted);
+}
+
+/* ---------------------------------------------------------
+   Print Styles — Resume PDF Export
+--------------------------------------------------------- */
+
+@media print {
+
+  body {
+    background: white !important;
+    color: var(--nb-text) !important;
+  }
+
+  nav, .site-footer {
+    display: none !important;
+  }
+
+  .resume-page {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .resume-container {
+    max-height: none !important;
+    overflow: visible !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Avoid page breaks inside cards */
+  .job-card,
+  .education-card,
+  .cert-card,
+  .skill-category {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}

@@ -1,0 +1,19 @@
+projects:
+- name: "Portfolio Platform \u2013 GitHub Pages + Jekyll"
+  summary: "Designed and built a fully componentized, YAML\u2011driven r\xE9sum\xE9\
+    \ and portfolio system demonstrating systems analysis, documentation structure,\
+    \ and modern web architecture."
+  bullets:
+  - "Created reusable HTML includes and data\u2011driven layouts for consistent rendering."
+  - Developed a structured documentation framework including Use Cases, UI flows,
+    and system diagrams.
+  - Implemented a scalable theme (NeuByte) supporting modular content and future expansion.
+  - Showcases modernization, systems thinking, and technical communication skills.
+- name: Use Case & Documentation Framework
+  summary: Developed a comprehensive documentation system for modeling enterprise
+    workflows, requirements, and system behavior using standardized templates and
+    visual grammar.
+  bullets:
+  - Authored detailed Use Cases, Activity Diagrams, and UI flows.
+  - Established consistent formatting, naming conventions, and diagram standards.
+  - Demonstrated ability to translate complex processes into clear, structured artifacts.

@@ -1,0 +1,67 @@
+- category: Business & Systems Analysis
+  skills:
+  - Requirements Gathering & Analysis
+  - Use Cases & Functional Specifications
+  - Process Documentation & Workflow Modeling
+  - UI Flows & System Behavior Analysis
+  - Cross-Team Collaboration
+  - Production Support & Troubleshooting
+  - "ICD-9 \u2192 ICD-10 Remediation"
+  - Lean Six Sigma
+- category: Modernization & Architecture
+  skills:
+  - Legacy System Analysis
+  - System Decomposition
+  - Data Mapping & Lineage
+  - ETL/ELT Workflow Understanding
+  - API Requirements & Integration Patterns
+  - Cloud-Ready Design (Azure/AWS Patterns)
+  - Reporting & Platform Modernization
+- category: Data & SQL
+  skills:
+  - T-SQL
+  - "SQL Server (2012\u20132019)"
+  - BigQuery
+  - Data Warehousing (Kimball)
+  - Fact & Dimension Modeling
+  - Stored Procedures & Functions
+  - Query Optimization
+  - SQL Agent Jobs
+  - SSIS (ETL)
+- category: Cloud & DevOps
+  skills:
+  - Azure Data Fundamentals (DP-900)
+  - Azure AI Fundamentals (AI-900)
+  - GitHub Foundations (GH-900)
+  - GitHub Actions
+  - GitHub Project Management
+  - CI/CD Concepts
+- category: Programming & Scripting
+  skills:
+  - Python (OOP)
+  - C#
+  - ".NET Framework (1.1\u20134.8)"
+  - LINQ
+  - Entity Framework
+  - JavaScript / jQuery
+  - JSON / XML
+- category: Analytics & Reporting
+  skills:
+  - SSAS (SQL Server Analysis Services)
+  - Crystal Reports
+  - Google Analytics (BigQuery ingestion)
+  - Reporting & Dashboard Support
+- category: Web & Application Development
+  skills:
+  - ASP.NET (WebForms & MVC)
+  - HTML / CSS
+  - Kendo UI
+  - Handlebars Templates
+  - UI/UX Collaboration
+- category: Tools & Platforms
+  skills:
+  - Team Foundation Server (TFS)
+  - SharePoint 2003 / 2007 / 2010
+  - Visual Studio
+  - SQL Server Management Studio
+  - GitHub

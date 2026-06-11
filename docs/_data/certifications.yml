@@ -1,0 +1,21 @@
+- name: GH-900 GitHub Foundations
+  issuer: Microsoft
+  year: 2026
+  summary: Demonstrates proficiency with GitHub repositories, branching strategies,
+    workflow automation, and collaborative development practices essential for modern
+    systems and platform teams.
+- name: DP-900 Azure Data Fundamentals
+  issuer: Microsoft
+  year: 2026
+  summary: Validates understanding of core data concepts, relational and non-relational
+    models, and cloud-based analytics workloads used in modern data platforms.
+- name: AI-900 Azure AI Fundamentals
+  issuer: Microsoft
+  year: 2026
+  summary: Covers foundational concepts in AI, machine learning, and Azure AI services,
+    supporting analysis and integration of intelligent features into enterprise systems.
+- name: Python Object-Oriented Programming
+  issuer: OpenEDG / Python Institute
+  year: 2026
+  summary: Demonstrates proficiency in object-oriented programming principles using
+    Python, enabling automation, data processing, and system integration tasks.

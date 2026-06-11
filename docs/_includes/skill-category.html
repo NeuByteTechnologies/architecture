@@ -1,0 +1,9 @@
+<section class="skill-category">
+  <h3 class="skill-category-title">{{ include.category }}</h3>
+
+  <ul class="skill-list">
+    {% for skill in include.skills %}
+      <li class="skill-item">{{ skill }}</li>
+    {% endfor %}
+  </ul>
+</section>
