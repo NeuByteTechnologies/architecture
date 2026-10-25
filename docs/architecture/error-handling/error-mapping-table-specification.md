@@ -1,300 +1,450 @@
 # FS-ERROR-MAPPING-TABLE-SPECIFICATION
 
-| Field | Value |
-|---------|---------|
-| Version | 1.0.0 |
-| Status | Draft |
-| Classification | Internal Architecture |
-| Domain | Error Handling |
-| Owner | Architecture |
-| Parent Document | Error Handling Architecture Overview |
+## 1. Document Overview
+
+### Purpose
+
+This specification defines the Exception Mapping Framework for the Fitness Application Error Handling Architecture. It establishes standard exception classification, error condition mapping, severity assignment, propagation rules, response behavior, telemetry requirements, and auditing semantics.
+
+### Scope
+
+This specification applies to all application layers:
+
+- Presentation Layer (UI / API)
+- Middleware Layer
+- Application Services Layer
+- Domain Layer
+- Data Access Layer
+- External Integration Layer
+
+### Related Artifacts
+
+#### Business Requirements
+
+- BR-ERROR-01
+- BR-ERROR-PIPELINE-02
+
+#### Use Cases
+
+- UC-ERROR-HANDLING-01
+- UC-VALIDATION-02
+
+#### Functional Specifications
+
+- FS-ERROR-HIERARCHY
+- FS-MIDDLEWARE-FLOW
+
+#### Data Specification Fields
+
+- error.code
+- error.type
+- error.severity
+
+#### Test Cases
+
+- TC-EXCEPTION-MAP-01
+- TC-EXCEPTION-MAP-NEG-01
 
 ---
 
-# 1. Purpose
+# 2. Error Handling Objectives
 
-This specification defines the Exception Mapping Framework used by the Error Handling subsystem.
+The Exception Mapping Framework shall:
 
-The mapping framework provides deterministic translation between:
-
-- Thrown exceptions
-- Error codes
-- HTTP status codes
-- Severity levels
-- Client response behaviors
-
-The mapping process ensures all errors are handled consistently regardless of originating layer.
-
----
-
-# 2. Scope
-
-This specification applies to:
-
-- Domain exceptions
-- Application exceptions
-- Infrastructure exceptions
-- Integration exceptions
-- Validation exceptions
-- Authentication exceptions
-- Authorization exceptions
-
-The specification governs all exceptions that may pass through the Error Handler Middleware.
+- Standardize exception classification.
+- Standardize error condition identification.
+- Ensure consistent client responses.
+- Prevent leakage of internal implementation details.
+- Support application observability.
+- Support telemetry and auditing.
+- Enable deterministic middleware processing.
+- Provide consistent error codes across applications.
+- Support future enterprise-wide governance and monitoring initiatives.
 
 ---
 
-# 3. Architectural Goals
+# 3. Exception Hierarchy
 
-The mapping process shall:
-
-- Produce deterministic error responses
-- Eliminate ambiguous exception handling
-- Standardize severity assignment
-- Support observability
-- Support troubleshooting
-- Prevent implementation detail leakage
-- Enable automated documentation generation
-
----
-
-# 4. Mapping Principles
-
-## Principle 1 - Deterministic Mapping
-
-Every exception shall map to exactly one error code.
-
-An exception shall never map to multiple error codes.
-
----
-
-## Principle 2 - Single Responsibility
-
-Exception classes define business meaning.
-
-The mapping table defines operational behavior.
-
----
-
-## Principle 3 - Controlled Disclosure
-
-Internal exception details shall never be exposed outside the application boundary.
-
----
-
-## Principle 4 - Observability
-
-All mapped exceptions shall be eligible for logging, telemetry, and diagnostics.
-
----
-
-# 5. Severity Definitions
-
-| Severity | Description | Operational Impact |
-|------------|------------|------------|
-| INFO | Informational processing event | No interruption |
-| LOW | Minor recoverable issue | Limited impact |
-| MEDIUM | Degraded business operation | User action required |
-| HIGH | Service functionality impaired | Operation failed |
-| CRITICAL | System-level failure | Immediate intervention required |
-
----
-
-# 6. Standard Mapping Table
-
-| Exception Type | Error Code | HTTP Status | Severity | Client Visible | Retry Allowed |
-|----------------|------------|-------------|----------|---------------|---------------|
-| RequiredFieldException | VAL-001 | 400 | LOW | Yes | No |
-| FormatValidationException | VAL-002 | 400 | LOW | Yes | No |
-| BusinessRuleValidationException | VAL-003 | 422 | MEDIUM | Yes | No |
-| AuthenticationFailedException | AUTH-001 | 401 | MEDIUM | Yes | No |
-| PermissionDeniedException | AUTH-002 | 403 | MEDIUM | Yes | No |
-| WorkoutRuleException | BUS-001 | 422 | MEDIUM | Yes | No |
-| NutritionRuleException | BUS-002 | 422 | MEDIUM | Yes | No |
-| MembershipRuleException | BUS-003 | 422 | MEDIUM | Yes | No |
-| ExternalApiException | INT-001 | 502 | HIGH | No | Yes |
-| TimeoutException | INT-002 | 504 | HIGH | No | Yes |
-| ThirdPartyServiceException | INT-003 | 503 | HIGH | Yes | Yes |
-| DatabaseException | DATA-001 | 500 | HIGH | No | Conditional |
-| ConcurrencyException | DATA-002 | 409 | HIGH | Yes | Yes |
-| DataIntegrityException | DATA-003 | 500 | HIGH | No | No |
-| ConfigurationException | SYS-001 | 500 | CRITICAL | No | No |
-| InfrastructureException | SYS-002 | 500 | CRITICAL | No | Conditional |
-| UnexpectedException | SYS-999 | 500 | CRITICAL | No | No |
-
----
-
-# 7. Default Mapping Rule
-
-If an exception cannot be resolved through explicit mappings, the middleware shall apply the fallback mapping.
-
-| Property | Value |
-|------------|------------|
-| Exception Type | UnexpectedException |
-| Error Code | SYS-999 |
-| HTTP Status | 500 |
-| Severity | CRITICAL |
-| Client Visible | No |
-| Retry Allowed | No |
-
----
-
-# 8. Mapping Resolution Process
+## 3.1 Logical Hierarchy
 
 ```text
-Exception Raised
-        │
-        ▼
-Identify Exception Type
-        │
-        ▼
-Lookup Mapping Table
-        │
-        ├── Match Found
-        │        │
-        │        ▼
-        │   Assign Mapping
-        │
-        └── No Match
-                 │
-                 ▼
-          Apply Fallback Mapping
-                 │
-                 ▼
-          Return Result
+BaseApplicationException
+│
+├── ValidationException
+│   ├── RequiredFieldException
+│   ├── FormatValidationException
+│   └── BusinessRuleValidationException
+│
+├── AuthorizationException
+│   ├── AuthenticationFailedException
+│   └── PermissionDeniedException
+│
+├── BusinessException
+│   ├── WorkoutRuleException
+│   ├── NutritionRuleException
+│   └── MembershipRuleException
+│
+├── IntegrationException
+│   ├── ExternalApiException
+│   ├── TimeoutException
+│   └── ThirdPartyServiceException
+│
+├── DataAccessException
+│   ├── DatabaseException
+│   ├── ConcurrencyException
+│   └── DataIntegrityException
+│
+└── SystemException
+    ├── ConfigurationException
+    ├── InfrastructureException
+    └── UnexpectedException
 ```
 
 ---
 
-# 9. Cross-Layer Translation Rules
+# 4. Severity Classification
 
-The originating layer may translate platform-specific exceptions into application-specific exceptions prior to mapping.
+## 4.1 Severity Definitions
 
-| Source Layer | Original Exception | Translated Exception |
-|--------------|-------------------|----------------------|
-| Database Layer | SqlException | DatabaseException |
-| Database Layer | Concurrency Failure | ConcurrencyException |
-| Integration Layer | Network Failure | ExternalApiException |
-| Integration Layer | Timeout | TimeoutException |
-| Domain Layer | Rule Violation | BusinessRuleValidationException |
-| Security Layer | Authentication Failure | AuthenticationFailedException |
-| Security Layer | Authorization Failure | PermissionDeniedException |
+| Severity | Description | Operational Impact |
+|-----------|-------------|-------------------|
+| INFO | Informational event | No interruption |
+| LOW | Minor recoverable issue | Limited impact |
+| MEDIUM | Functional degradation | User action required |
+| HIGH | Business operation failure | Process halted |
+| CRITICAL | Application or infrastructure failure | Immediate attention required |
 
-The middleware should only receive application-defined exceptions whenever possible.
+## 4.2 Severity Enumeration
 
----
-
-# 10. Client Visibility Rules
-
-## Visible Errors
-
-Visible errors may expose:
-
-- Error code
-- User-safe message
-- Correlation identifier
-
-Examples:
-
-- Validation failures
-- Authentication failures
-- Authorization failures
-- Business rule violations
+```csharp
+public enum ErrorSeverity : byte
+{
+    Info = 0,
+    Low = 1,
+    Medium = 2,
+    High = 3,
+    Critical = 4
+}
+```
 
 ---
 
-## Non-Visible Errors
+# 5. Exception Mapping Table
 
-Non-visible errors shall not expose:
+## 5.1 Validation Exceptions
+
+| Exception Type | Error Code | Severity | HTTP Status | Client Visible | Retry Allowed |
+|----------------|------------|----------|-------------|----------------|---------------|
+| RequiredFieldException | VAL-001 | LOW | 400 | Yes | No |
+| FormatValidationException | VAL-002 | LOW | 400 | Yes | No |
+| BusinessRuleValidationException | VAL-003 | MEDIUM | 422 | Yes | No |
+
+---
+
+## 5.2 Authentication and Authorization Exceptions
+
+| Exception Type | Error Code | Severity | HTTP Status | Client Visible | Retry Allowed |
+|----------------|------------|----------|-------------|----------------|---------------|
+| AuthenticationFailedException | AUTH-001 | MEDIUM | 401 | Yes | No |
+| PermissionDeniedException | AUTH-002 | MEDIUM | 403 | Yes | No |
+
+---
+
+## 5.3 Business Exceptions
+
+| Exception Type | Error Code | Severity | HTTP Status | Client Visible | Retry Allowed |
+|----------------|------------|----------|-------------|----------------|---------------|
+| WorkoutRuleException | BUS-001 | MEDIUM | 422 | Yes | No |
+| NutritionRuleException | BUS-002 | MEDIUM | 422 | Yes | No |
+| MembershipRuleException | BUS-003 | MEDIUM | 422 | Yes | No |
+
+---
+
+## 5.4 Integration Exceptions
+
+| Exception Type | Error Code | Severity | HTTP Status | Client Visible | Retry Allowed |
+|----------------|------------|----------|-------------|----------------|---------------|
+| ExternalApiException | INT-001 | HIGH | 502 | No | Yes |
+| TimeoutException | INT-002 | HIGH | 504 | No | Yes |
+| ThirdPartyServiceException | INT-003 | HIGH | 503 | Yes |
+
+---
+
+## 5.5 Database Exceptions
+
+### Database Operation Failures
+
+DatabaseException represents failures during database operations, connectivity, execution, transaction processing, and SQL Server engine interactions.
+
+| Exception Type | Error Code | Severity | HTTP Status | Client Visible | Retry Allowed |
+|----------------|------------|----------|-------------|----------------|---------------|
+| DatabaseException | DATA-000 | HIGH | 500 | No | Conditional |
+| DatabaseException | DATA-001 Connection Failure | CRITICAL | 500 | No | Yes |
+| DatabaseException | DATA-002 Timeout | HIGH | 504 | No | Yes |
+| DatabaseException | DATA-003 Deadlock | MEDIUM | 409 | No | Yes |
+| DatabaseException | DATA-004 Arithmetic Overflow | HIGH | 500 | No | No |
+| DatabaseException | DATA-005 Constraint Violation | MEDIUM | 422 | No | No |
+
+---
+
+## 5.6 Concurrency Exceptions
+
+| Exception Type | Error Code | Severity | HTTP Status | Client Visible | Retry Allowed |
+|----------------|------------|----------|-------------|----------------|---------------|
+| ConcurrencyException | DATA-050 | HIGH | 409 | Yes | Yes |
+
+---
+
+## 5.7 Data Integrity Exceptions
+
+### Data Integrity Failures
+
+DataIntegrityException represents invalid, inconsistent, corrupted, or non-compliant business data that may not originate from a database engine failure.
+
+Examples include:
+
+- Data governance violations
+- Referential inconsistencies
+- Aggregate calculation mismatches
+- Reconciliation failures
+- Application-level data corruption
+
+| Exception Type | Error Code | Severity | HTTP Status | Client Visible | Retry Allowed |
+|----------------|------------|----------|-------------|----------------|---------------|
+| DataIntegrityException | DATA-100 Data Integrity Failure | HIGH | 500 | No | No |
+| DataIntegrityException | DATA-101 Referential Integrity Violation | HIGH | 500 | No | No |
+| DataIntegrityException | DATA-102 Aggregate Consistency Failure | HIGH | 500 | No | No |
+| DataIntegrityException | DATA-103 Governance Rule Violation | LOW | 422 | Yes | No |
+| DataIntegrityException | DATA-104 Data Reconciliation Failure | HIGH | 500 | No | No |
+
+---
+
+## 5.8 System Exceptions
+
+| Exception Type | Error Code | Severity | HTTP Status | Client Visible | Retry Allowed |
+|----------------|------------|----------|-------------|----------------|---------------|
+| ConfigurationException | SYS-001 | CRITICAL | 500 | No | No |
+| InfrastructureException | SYS-002 | CRITICAL | 500 | No | Conditional |
+| UnexpectedException | SYS-999 | CRITICAL | 500 | No | No |
+
+---
+
+# 6. Mapping Rules
+
+## Rule 1: Explicit Mapping
+
+Every custom exception class shall be mapped to one or more defined error codes representing specific error conditions.
+
+---
+
+## Rule 2: Severity Assignment
+
+Every mapped error code shall define a severity classification.
+
+---
+
+## Rule 3: Unique Error Codes
+
+Each error code shall uniquely identify exactly one exception condition.
+
+Duplicate error codes are prohibited.
+
+---
+
+## Rule 4: Fallback Mapping
+
+Unrecognized exceptions shall be mapped as:
+
+```text
+Exception Type : UnexpectedException
+Error Code     : SYS-999
+Severity       : CRITICAL
+HTTP Status    : 500
+```
+
+---
+
+## Rule 5: Client Response Protection
+
+Internal implementation details including:
 
 - Stack traces
-- Database details
-- Infrastructure information
-- External dependency information
+- Connection strings
+- SQL statements
+- Infrastructure details
 
-Examples:
-
-- Database failures
-- Configuration failures
-- Infrastructure failures
-- Unknown exceptions
+shall never be exposed outside the server boundary.
 
 ---
 
-# 11. Retry Classification
+## Rule 6: Logging Requirement
 
-## Retry Allowed
+All HIGH and CRITICAL severity conditions shall generate log entries.
 
-Operations may be retried automatically.
-
-Examples:
-
-- Network failures
-- External service timeouts
-- Concurrency conflicts
+Logging implementation details and logging levels are outside the scope of the Exception Mapping Framework.
 
 ---
 
-## Conditional Retry
+## Rule 7: Observability Requirement
 
-Retry behavior depends on runtime circumstances.
+All exception mappings shall generate telemetry events.
 
-Examples:
+Telemetry data shall include:
 
-- Infrastructure failures
-- Database availability failures
-
----
-
-## Retry Prohibited
-
-Retries shall not be attempted.
-
-Examples:
-
-- Validation failures
-- Authentication failures
-- Business rule violations
+- Error Code
+- Exception Type
+- Severity
+- Correlation Identifier
+- Timestamp
 
 ---
 
-# 12. Validation Rules
+# 7. Cross-Layer Propagation Rules
 
-The implementation shall fail validation when:
+## 7.1 Propagation Principle
 
-- An exception lacks a mapping
-- Duplicate exception mappings exist
-- Duplicate error codes are assigned
-- Undefined error codes are referenced
-- Invalid severity values are assigned
-- Invalid HTTP status values are assigned
+Exceptions originate in lower layers and propagate upward through the middleware pipeline.
+
+```text
+Data Layer
+    │
+    ▼
+Domain Layer
+    │
+    ▼
+Application Service Layer
+    │
+    ▼
+Middleware Layer
+    │
+    ▼
+API/UI Response
+```
 
 ---
 
-# 13. Compliance Requirements
+## 7.2 Translation Rules
 
-The following conditions must be true before release:
-
-- Every exception has a mapping
-- Every mapping references a registered error code
-- All mappings have assigned severities
-- All mappings define visibility behavior
-- All mappings define retry behavior
+| Source Layer | Original Condition | Translated Exception |
+|--------------|-------------------|----------------------|
+| Database Layer | SQL Connectivity Failure | DatabaseException |
+| Database Layer | Deadlock | DatabaseException |
+| Database Layer | Constraint Violation | DatabaseException |
+| Third-Party API | Network Failure | ExternalApiException |
+| Domain Service | Business Rule Violation | BusinessRuleValidationException |
+| Authentication Service | Invalid Credentials | AuthenticationFailedException |
+| Application Service | Data Consistency Failure | DataIntegrityException |
+| Governance Service | Policy Violation | DataIntegrityException |
 
 ---
 
-# 14. Related Documents
+## 7.3 Termination Point
 
-## Parent Architecture
+The Middleware Layer shall be the final exception handling boundary responsible for:
 
-- Error Handling Architecture Overview
+- Exception classification
+- Error code assignment
+- Severity assignment
+- Logging
+- Telemetry generation
+- Response creation
 
-## Supporting Specifications
+---
 
-- Error Code Registry Specification
-- Domain Exception Subclass Specification
-- Error Pipeline Logging Strategy
-- Correlation ID Strategy
+# 8. Error Response Contract
 
-## Governance
+## Standard Structure
 
-- Error Handling Standard
+```json
+{
+  "error": {
+    "code": "DATA-001",
+    "type": "DatabaseException",
+    "severity": "CRITICAL",
+    "message": "Database connectivity failure.",
+    "correlationId": "GUID"
+  }
+}
+```
+
+---
+
+## Field Definitions
+
+| Field | Description |
+|---------|------------|
+| error.code | Unique mapped error code |
+| error.type | Exception classification |
+| error.severity | Assigned severity level |
+| message | Client-safe error message |
+| correlationId | End-to-end trace identifier |
+
+---
+
+# 9. Middleware Processing Semantics
+
+```text
+Exception Raised
+      │
+      ▼
+Exception Interceptor
+      │
+      ▼
+Classify Exception
+      │
+      ▼
+Lookup Error Mapping
+      │
+      ▼
+Assign Error Code
+Assign Severity
+      │
+      ├── Log Event
+      ├── Create Telemetry Event
+      └── Build Error Response
+                │
+                ▼
+         Return Response
+```
+
+---
+
+# 10. Validation Rules
+
+Deployment shall be rejected when:
+
+- An exception class exists without a defined mapping.
+- Duplicate error codes exist.
+- Invalid severity values exist.
+- Undefined propagation paths exist.
+- Middleware mapping configuration is incomplete.
+- Reserved error code ranges are violated.
+
+---
+
+# 11. Acceptance Criteria Traceability
+
+| Acceptance Criterion | Coverage Section |
+|----------------------|-----------------|
+| Exception hierarchy defined | Section 3 |
+| Severity model defined | Section 4 |
+| Exception mappings defined | Section 5 |
+| Propagation rules documented | Section 7 |
+| Error response contract defined | Section 8 |
+| Middleware processing defined | Section 9 |
+| Validation rules defined | Section 10 |
+
+---
+
+# 12. Future Deliverables
+
+The architecture documentation shall include:
+
+- Exception Hierarchy Diagram
+- Exception Mapping Diagram
+- Error Code Catalog Specification
+- Error Pipeline Sequence Diagram
+- Middleware Processing Flow Diagram
+- Cross-Layer Error Propagation Diagram
+- Error Response Contract Diagram
+- Telemetry and Observability Specification
