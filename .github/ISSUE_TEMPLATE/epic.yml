@@ -1,0 +1,102 @@
+name: Epic
+description: Large body of work spanning multiple features, documentation artifacts, and implementation tasks.
+title: "[EPIC] "
+labels:
+  - epic
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: Describe the overall objective of the epic.
+      placeholder: >
+        Build a reusable application error handling framework
+        supporting exception management, standardized responses,
+        logging, and governance.
+    validations:
+      required: true
+
+  - type: textarea
+    id: business-value
+    attributes:
+      label: Business Value
+      description: Why is this work important?
+      placeholder: >
+        Improves consistency, maintainability, supportability,
+        and developer productivity.
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: In Scope
+      description: What is included in this epic?
+      placeholder: |
+        - Exception framework
+        - Error catalog
+        - Middleware
+        - Documentation
+        - Testing
+
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of Scope
+      description: What is explicitly excluded?
+      placeholder: |
+        - Observability platform integration
+        - Third-party logging providers
+
+  - type: textarea
+    id: child-features
+    attributes:
+      label: Planned Features
+      description: List related feature issues.
+      placeholder: |
+        - [ ] #80 Parameterized Error Message Framework
+        - [ ] #81 Context-Aware Exception Framework
+        - [ ] #83 Error Handling Middleware
+
+  - type: textarea
+    id: documentation
+    attributes:
+      label: Documentation Artifacts
+      placeholder: |
+        - [ ] Architecture Decisions
+        - [ ] Governance Standard
+        - [ ] Developer Guide
+
+  - type: textarea
+    id: testing
+    attributes:
+      label: Testing Artifacts
+      placeholder: |
+        - [ ] Unit Tests
+        - [ ] Integration Tests
+        - [ ] Validation Tests
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      placeholder: >
+        List any related epics, repositories,
+        standards, or prerequisite work.
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Epic Completion Criteria
+      placeholder: |
+        - All child issues completed
+        - Documentation published
+        - Tests passing
+        - Architecture approved
+        - Ready for production use
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Additional planning or architectural guidance.
