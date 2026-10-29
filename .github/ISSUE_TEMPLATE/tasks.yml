@@ -1,0 +1,48 @@
+name: Task
+description: Implementation work item supporting a feature or epic.
+title: "[TASK] "
+labels:
+  - task
+
+body:
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What work is being performed?
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      placeholder: |
+        - Implement middleware pipeline
+        - Register dependencies
+        - Add tests
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      placeholder: |
+        - Component implemented
+        - Tests passing
+        - Documentation updated
+    validations:
+      required: true
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      placeholder: |
+        - #83 Error Handling Middleware
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Optional implementation notes.
