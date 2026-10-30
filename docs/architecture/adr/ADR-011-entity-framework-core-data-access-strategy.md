@@ -8,19 +8,19 @@
 
 # 1. Context
 
-The Fitness platform requires a data access architecture that supports:
+The Fitness platform requires a data access architecture capable of supporting:
 
-- Audit logging
 - Fitness domain entities
 - Application services
+- Audit logging
+- Reference data management
 - ASP.NET Core and Blazor integration
 - Testability
-- Modern .NET development practices
+- Reporting and analytics
+- ETL processes
 - Future application growth
 
-The project is transitioning from a primarily database-centric design approach toward a modern .NET application architecture.
-
-Historically, the preferred pattern has been:
+Historically, development has followed a database-centric architecture:
 
 ```text
 Application
@@ -30,20 +30,22 @@ Stored Procedure
 SQL Server
 ```
 
-This architecture emphasizes:
+This approach emphasizes:
 
 - SQL Server as the authoritative source of truth
-- Stored procedures for database interaction
-- Explicit SQL control
+- Stored procedures for business operations
+- Explicit query and transaction control
 - Strong database governance
+- Reference data management within the database
+- Reporting and ETL support
 
-As development progressed, the need arose to determine whether the platform should continue using direct SQL access or adopt Entity Framework Core.
+As the Fitness platform evolved, a formal decision was required regarding adoption of Entity Framework Core while preserving the database governance principles established through prior development experience.
 
 ---
 
 # 2. Decision
 
-The Fitness platform shall adopt Entity Framework Core as the primary data access technology.
+The Fitness platform shall adopt Entity Framework Core as the primary data access framework.
 
 Primary package:
 
@@ -51,13 +53,31 @@ Primary package:
 Microsoft.EntityFrameworkCore.SqlServer
 ```
 
-Data access shall be centered around a single application DbContext:
+The primary application data boundary shall be represented through:
 
-```csharp
+```text
 FitnessDbContext
 ```
 
-The DbContext will represent the application's primary transactional boundary.
+Entity Framework Core shall be used as the standard mechanism for:
+
+- Entity mapping
+- Dependency injection integration
+- Transaction coordination
+- Change tracking
+- Migrations
+- Unit testing support
+- Repository implementations
+
+The adoption of Entity Framework Core does not require exclusive use of entity-to-table CRUD operations.
+
+A hybrid data access strategy shall be used where Entity Framework Core may interact with:
+
+- Tables
+- Views
+- Stored Procedures
+
+based upon the architectural requirements of the operation being performed.
 
 ---
 
@@ -75,15 +95,16 @@ Adopting EF Core supports learning objectives in:
 - LINQ
 - Entity Configuration
 - Database Migrations
-- Repository and Service Patterns
+- Repository Patterns
+- Service Layer Design
 
-These skills are commonly expected in contemporary .NET development roles.
+These skills are commonly expected within current .NET development environments.
 
 ---
 
 ## 3.2 Portfolio Development
 
-One goal of the Fitness platform is to serve as a professional portfolio demonstrating:
+The Fitness platform serves as a professional portfolio demonstrating:
 
 - Architecture
 - TDD
@@ -91,13 +112,11 @@ One goal of the Fitness platform is to serve as a professional portfolio demonst
 - Infrastructure Design
 - Modern Microsoft Stack Technologies
 
-Entity Framework Core increases the portfolio's relevance to current enterprise development practices.
+Entity Framework Core increases portfolio relevance while maintaining flexibility to utilize advanced SQL Server capabilities when appropriate.
 
 ---
 
 ## 3.3 Future Domain Growth
-
-The current data model contains only a limited number of entities.
 
 Future development is expected to include:
 
@@ -107,7 +126,9 @@ Future development is expected to include:
 - Equipment
 - User Profiles
 - Progress Tracking
+- Notifications
 - Audit Logging
+- Diagnostics
 
 Entity Framework Core provides strong support for:
 
@@ -116,7 +137,7 @@ Entity Framework Core provides strong support for:
 - Aggregate Modeling
 - Transaction Management
 
-which naturally align with future application requirements.
+which align naturally with anticipated growth of the domain model.
 
 ---
 
@@ -124,24 +145,105 @@ which naturally align with future application requirements.
 
 Adoption of EF Core does not replace SQL Server expertise.
 
-The system shall continue to leverage:
+The platform shall continue to leverage:
 
-- Database schemas
+- Schemas
 - Constraints
-- Indexing
-- Keys
-- SQL performance tuning
-- T-SQL when appropriate
+- Primary Keys
+- Foreign Keys
+- Indexes
+- Views
+- Stored Procedures
+- Query optimization
+- Execution plan analysis
+- T-SQL
 
 SQL Server remains the authoritative source of truth.
 
-Entity Framework Core provides an abstraction layer for application development rather than a replacement for sound database design.
+Entity Framework Core is considered an application development framework rather than a replacement for sound database architecture.
 
 ---
 
-# 4. Alternatives Considered
+## 3.5 Hybrid Data Access Strategy
 
-## 4.1 Microsoft.Data.SqlClient
+The platform shall utilize a hybrid approach combining Entity Framework Core and database-native capabilities.
+
+Entity Framework Core shall be preferred for:
+
+- Simple CRUD operations
+- Standard entity persistence
+- Relationship management
+- Common application queries
+- Transaction coordination
+
+Stored Procedures shall be considered appropriate for:
+
+- Multi-table business operations
+- Audit logging
+- Complex validation workflows
+- Reference data resolution
+- Reporting operations
+- ETL support
+- Administrative functions
+- Performance-sensitive operations
+
+Views shall be considered appropriate for:
+
+- Reporting
+- Analytics
+- Read-only projections
+- ETL staging access
+- Complex reusable query definitions
+
+Selection of implementation technology shall be based upon:
+
+- Governance requirements
+- Maintainability
+- Performance characteristics
+- Architectural clarity
+- Long-term supportability
+
+---
+
+# 4. Reference Data Governance
+
+The platform includes managed reference data tables such as:
+
+- Error Codes
+- Error Severity
+- Event Types
+- Notification Types
+- Workout Types
+- User Types
+
+Reference data is considered governed data rather than application constants.
+
+Reference data tables may include governance fields such as:
+
+```sql
+create_date
+last_update_date
+deleted_flag
+```
+
+These tables may be used to support:
+
+- Reporting dimensions
+- ETL processes
+- Operational validation
+- Master data management
+
+When application enums represent reference data:
+
+- Integration tests shall validate alignment between code and database values.
+- Database governance remains authoritative.
+- Drift between application definitions and database reference data shall be detected through automated testing.
+
+---
+
+# 5. Alternatives Considered
+
+## 5.1 Microsoft.Data.SqlClient
 
 ### Pros
 
@@ -149,22 +251,22 @@ Entity Framework Core provides an abstraction layer for application development 
 - Maximum transparency
 - Minimal abstraction
 - Excellent performance
-- Familiar to database-centric development
+- Familiar database-centric model
 
 ### Cons
 
 - More boilerplate code
 - Manual mapping
-- Increased maintenance
-- Less alignment with modern .NET development practices
+- Higher maintenance cost
+- Less alignment with modern .NET practices
 
 ### Decision
 
-Rejected as the primary data access strategy but remains available for specialized scenarios.
+Rejected as the primary data access strategy but remains available when EF Core abstractions are not appropriate.
 
 ---
 
-## 4.2 Dapper
+## 5.2 Dapper
 
 ### Pros
 
@@ -176,8 +278,8 @@ Rejected as the primary data access strategy but remains available for specializ
 ### Cons
 
 - Additional dependency
-- Limited learning value compared to EF Core
-- Less common in enterprise application architectures
+- Reduced educational value compared to EF Core
+- Less alignment with desired portfolio objectives
 
 ### Decision
 
@@ -185,66 +287,66 @@ Rejected as the primary data access strategy.
 
 ---
 
-## 4.3 Stored Procedure-Centric Architecture
+## 5.3 Stored Procedure-Centric Architecture
 
 ### Pros
 
 - Strong database governance
 - Explicit execution plans
-- Familiar architecture
+- Centralized validation
+- Consistent interaction patterns
+- Excellent support for reporting and ETL
 
 ### Cons
 
 - Higher development overhead
-- Reduced flexibility
-- Less alignment with current .NET practices
-- Increased maintenance burden
+- Increased deployment coordination
+- Reduced flexibility for simple CRUD scenarios
+- Larger maintenance burden
 
 ### Decision
 
-Rejected as the primary application architecture.
+Rejected as the exclusive application architecture.
 
-Stored procedures may still be used for:
-
-- Reporting
-- ETL
-- Performance-critical operations
-- Administrative processes
+Stored procedures remain an approved architectural pattern where appropriate.
 
 ---
 
-# 5. DbContext Strategy
+# 6. DbContext Strategy
 
-The platform shall initially implement a single DbContext:
+The platform shall initially implement a single DbContext.
 
 ```csharp
 FitnessDbContext
 ```
 
-This context may include entities from multiple schemas.
+The DbContext may contain entities from multiple schemas.
 
-Example:
+Examples:
 
 ```text
 audit.ErrorLog
+audit.ApplicationLog
 dbo.Exercise
 dbo.Workout
 dbo.Program
+dbo.User
 ```
 
 Multiple schemas alone do not justify multiple DbContexts.
 
 ---
 
-# 6. Future Architectural Considerations
+# 7. Future Architectural Considerations
 
-Additional DbContexts may be introduced if one or more of the following conditions occur:
+Additional DbContexts may be introduced when justified by:
 
 - Separate databases
 - Independent deployment cycles
-- Distinct security boundaries
-- Bounded contexts
+- Security boundaries
+- Distinct bounded contexts
 - Independent scaling requirements
+- Separate operational ownership
 
 Examples:
 
@@ -257,55 +359,4 @@ LoggingDbContext
 
 Such separation shall be driven by demonstrated architectural need rather than anticipated future requirements.
 
----
-
-# 7. Consequences
-
-## Positive
-
-- Alignment with modern .NET development
-- Improved portfolio relevance
-- Simplified application development
-- Strong support for domain modeling
-- Integrated migration support
-- Consistent application architecture
-
-## Negative
-
-- Higher abstraction than direct SQL access
-- Reduced visibility into generated SQL
-- Additional learning curve
-- Potential for inefficient queries if not monitored
-
----
-
-# 8. Architectural Principles Preserved
-
-Adoption of Entity Framework Core does not change the following principles:
-
-```text
-SQL Server remains the source of truth.
-Database constraints remain authoritative.
-Database integrity is enforced at the database layer.
-Application convenience does not override data governance.
-```
-
-EF Core is considered an application development tool rather than a replacement for sound database architecture.
-
----
-
-# 9. Related Documents
-
-- ADR-001 Database Choice
-- ADR-010 Logging Severity and Verbosity Strategy
-- SystemArchitecture.md
-- DataArchitecture.md
-- ApplicationArchitecture.md
-
----
-
-# 10. Version History
-
-| Version | Date | Author | Description |
-|----------|----------|----------|----------|
-| 1.0 | 2026-10-29 | Gordon | Initial decision adopting Entity Framework Core as the primary data access strategy. |
+-
