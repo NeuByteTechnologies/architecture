@@ -241,9 +241,120 @@ When application enums represent reference data:
 
 ---
 
-# 5. Alternatives Considered
+# 5. Database Schema Ownership Strategy
 
-## 5.1 Microsoft.Data.SqlClient
+The Fitness platform shall organize database objects according to architectural responsibility rather than solely by application feature.
+
+Schemas shall represent ownership boundaries and data purpose.
+
+---
+
+## 5.1 dbo Schema (Operational OLTP)
+
+The dbo schema contains the primary transactional entities supporting the Fitness web application.
+
+Examples:
+
+- User
+- UserContact
+- Exercise
+- ExerciseEquipment
+- ExerciseProgram
+- Workout
+- UserWeight
+- Notification
+
+Characteristics:
+
+- Supports application transactions
+- Supports Create, Read, Update, Delete operations
+- Represents the operational source system
+- Optimized for transactional workloads
+
+---
+
+## 5.2 audit Schema (Audit and Diagnostics)
+
+The audit schema contains diagnostic, auditing, logging, and operational telemetry data.
+
+Examples:
+
+- ApplicationLog
+- ErrorLog
+- ErrorCode
+- ErrorSeverity
+- EventType
+- AppEvent
+
+Characteristics:
+
+- Supports operational diagnostics
+- Supports auditing requirements
+- Supports application troubleshooting
+- Supports diagnostic reporting
+- Maintains governance metadata
+
+Typical governance fields include:
+
+```sql
+created_date
+last_update_date
+last_update_user_id
+deleted_flag
+```
+
+The audit schema is considered part of the platform diagnostics architecture rather than the Fitness business domain.
+
+---
+
+## 5.3 dw Schema (Data Warehouse)
+
+The dw schema contains analytical fact and dimension structures supporting reporting and historical analysis.
+
+Examples:
+
+- FactWorkout
+- FactWeight
+- FactApplicationLog
+- DimUser
+- DimDate
+- DimExercise
+- DimErrorCode
+- DimSeverity
+
+Characteristics:
+
+- Analytical processing
+- Historical reporting
+- Power BI support
+- ETL destination structures
+- Star-schema modeling
+
+---
+
+## 5.4 datamart Schema (Reporting Layer)
+
+The datamart schema contains reporting-oriented views and analytical projections intended for report consumers.
+
+Examples:
+
+- vwWorkoutSummary
+- vwUserProgress
+- vwApplicationHealth
+- vwErrorAnalysis
+
+Characteristics:
+
+- Reporting consumption layer
+- Power BI friendly structures
+- Simplified reporting access
+- Presentation layer for analytics
+
+---
+
+# 6. Alternatives Considered
+
+## 6.1 Microsoft.Data.SqlClient
 
 ### Pros
 
@@ -266,7 +377,7 @@ Rejected as the primary data access strategy but remains available when EF Core 
 
 ---
 
-## 5.2 Dapper
+## 6.2 Dapper
 
 ### Pros
 
@@ -287,7 +398,7 @@ Rejected as the primary data access strategy.
 
 ---
 
-## 5.3 Stored Procedure-Centric Architecture
+## 6.3 Stored Procedure-Centric Architecture
 
 ### Pros
 
@@ -312,7 +423,7 @@ Stored procedures remain an approved architectural pattern where appropriate.
 
 ---
 
-# 6. DbContext Strategy
+# 7. DbContext Strategy
 
 The platform shall initially implement a single DbContext.
 
@@ -337,7 +448,7 @@ Multiple schemas alone do not justify multiple DbContexts.
 
 ---
 
-# 7. Future Architectural Considerations
+# 8. Future Architectural Considerations
 
 Additional DbContexts may be introduced when justified by:
 
@@ -356,7 +467,4 @@ IdentityDbContext
 ReportingDbContext
 LoggingDbContext
 ```
-
 Such separation shall be driven by demonstrated architectural need rather than anticipated future requirements.
-
--
