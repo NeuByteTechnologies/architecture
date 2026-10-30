@@ -188,7 +188,7 @@ Soft deletion may be omitted for append-only logging structures.
 
 ---
 
-## 5.3 dw Schema
+## 5.3 star Schema
 
 The Data Warehouse schema supports:
 
