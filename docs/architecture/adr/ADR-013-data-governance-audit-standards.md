@@ -1,47 +1,43 @@
-# ADR-013: Data Governance and Audit Standards
+# ADR-013: Database Governance Standards
 
 **Status:** Accepted
-**Date:** 2026-10-30
+**Date:** 2026-10-31
 **Owner:** Architecture & Systems Design
 
 ---
 
 # 1. Context
 
-The Fitness platform contains operational data, audit data, diagnostics data, analytical data, and reporting data.
+The Fitness platform utilizes a single SQL Server database containing multiple schemas with distinct architectural responsibilities.
 
-As the platform evolves, consistency in data governance becomes increasingly important.
+These schemas support:
 
-Without established governance standards, risks include:
+- Operational transaction processing
+- Diagnostics and observability
+- Data warehousing
+- Reporting and analytics
 
-- Inconsistent audit capabilities
-- Incomplete change tracking
-- Difficult root-cause analysis
-- Reporting inaccuracies
-- Data quality degradation
-- ETL complexity
-- Inconsistent soft-delete implementations
-- Reduced operational observability
+A single governance model applied uniformly across all schemas introduces unnecessary constraints and does not reflect the differing responsibilities of operational, audit, warehouse, and reporting structures.
 
-A formal governance standard is required to ensure all database objects support auditing, diagnostics, reporting, and future analytics requirements.
+The platform therefore requires a unified governance strategy that establishes common governance principles while allowing schema-specific implementations.
 
 ---
 
 # 2. Decision
 
-The Fitness platform shall implement standardized data governance and auditing practices across all database schemas.
+The Fitness platform shall implement governance standards based upon schema responsibility.
 
-The database shall support:
+The governance strategy shall support:
 
-- Record lifecycle tracking
-- User accountability
-- Soft deletion
+- Data traceability
+- Auditability
+- Operational monitoring
 - Historical analysis
+- Data lineage
 - Reporting consistency
-- Diagnostics and operational monitoring
 - Data warehouse integration
 
-Governance requirements shall apply to operational, audit, diagnostic, warehouse, and reporting structures where appropriate.
+Governance requirements shall vary by schema purpose rather than enforcing identical governance columns across all database objects.
 
 ---
 
@@ -49,15 +45,19 @@ Governance requirements shall apply to operational, audit, diagnostic, warehouse
 
 ## 3.1 Data Traceability
 
-All significant business records shall be traceable throughout their lifecycle.
+Significant business data shall be traceable throughout its lifecycle.
 
-The platform shall preserve information regarding:
+Traceability may include:
 
 - Record creation
 - Record modification
 - Record deletion
 - Record ownership
-- Data lineage
+- Historical versioning
+- ETL lineage
+- Warehouse lineage
+
+The implementation mechanism may vary by schema.
 
 ---
 
@@ -65,179 +65,239 @@ The platform shall preserve information regarding:
 
 SQL Server remains the authoritative source of truth.
 
-Application logic shall not override governance rules enforced at the database level.
-
 Governance controls may be implemented through:
 
 - Constraints
-- Stored Procedures
 - Views
-- Triggers (when justified)
-- ETL processes
+- Stored Procedures
+- Triggers
+- ETL Processes
+- Validation Tests
+
+Application logic shall not circumvent governance controls.
 
 ---
 
-## 3.3 Soft Delete Preference
+## 3.3 Explicit Governance
 
-The platform shall prefer soft deletion over physical deletion for business-critical data.
+Governance requirements shall be documented and validated through automated testing whenever practical.
 
-Soft deletion preserves:
-
-- Historical reporting
-- Auditability
-- Diagnostics
-- Data recovery capabilities
-
-Physical deletion shall occur only when explicitly justified.
+Database governance standards should be enforced through build validation, deployment validation, and continuous integration pipelines.
 
 ---
 
 ## 3.4 Reporting Consistency
 
-Reporting consumers should not be required to understand record lifecycle management.
+Reporting consumers should not require awareness of:
 
-Reporting views shall expose current-state data by default.
+- Soft delete implementation
+- Data warehouse structure
+- Lifecycle management implementation details
 
-Soft-deleted records shall normally be excluded from reporting views unless the reporting purpose explicitly requires historical visibility.
+Reporting structures shall expose consistent business semantics.
 
 ---
 
-# 4. Standard Governance Columns
+# 4. Schema Governance Standards
 
-Unless a documented exception exists, mutable tables shall include the following governance columns.
+## 4.1 dbo Schema Governance
 
-## Required Columns
+### Purpose
+
+The dbo schema contains operational OLTP entities representing current application state.
+
+Examples:
+
+- User
+- Workout
+- Exercise
+- Program
+- Notification
+
+### Required Governance Columns
+
+Mutable business entities shall normally contain:
 
 ```sql
 created_date          DATETIME2
 created_user_id       INT NULL
-
 last_update_date      DATETIME2
 last_update_user_id   INT NULL
-
 deleted_flag          BIT
 ```
 
----
+### Optional Governance Columns
 
-## Optional Columns
-
-The following columns may be implemented when additional governance requirements exist.
+The following columns may be implemented when additional auditability is required:
 
 ```sql
 deleted_date          DATETIME2 NULL
 deleted_user_id       INT NULL
-
-effective_start_date  DATETIME2 NULL
-effective_end_date    DATETIME2 NULL
 ```
 
-These columns are particularly useful for:
+### Governance Objectives
 
-- Regulatory tracking
-- Historical reporting
-- Slowly changing dimensions
-- Master data management
+The dbo schema supports:
+
+- Record lifecycle tracking
+- User accountability
+- Operational auditing
+- Soft deletion
+- Data quality management
 
 ---
 
-# 5. Schema Governance Standards
+## 4.2 audit Schema Governance
 
-## 5.1 dbo Schema
+### Purpose
 
-The dbo schema contains operational OLTP entities.
+The audit schema contains diagnostics, telemetry, auditing, and observability structures.
 
 Examples:
 
-```text
-User
-Workout
-Exercise
-Program
-Notification
+- ApplicationLog
+- ErrorLog
+- SecurityLog
+- PerformanceLog
+- ApiRequestLog
+- ProcedureExecutionLog
+- JobExecutionLog
+
+### Governance Model
+
+Audit structures are generally append-only.
+
+Historical visibility is preferred over lifecycle management.
+
+### Typical Governance Attributes
+
+Depending upon table purpose:
+
+```sql
+created_date
+correlation_id
+reference_code
+event_type_id
+severity_id
+source_system
 ```
 
-Governance columns are required on mutable business entities.
+### Soft Delete Guidance
 
----
+Append-only logging structures should not implement soft deletion unless explicitly justified.
 
-## 5.2 audit Schema
+### Governance Objectives
 
-The audit schema contains:
+The audit schema supports:
 
-- Logging
 - Diagnostics
-- Auditing
-- Telemetry
+- Root cause analysis
 - Operational monitoring
-
-Examples:
-
-```text
-ApplicationLog
-ErrorLog
-ErrorCode
-ErrorSeverity
-EventType
-ProcedureExecutionLog
-```
-
-The audit schema shall provide complete historical visibility whenever practical.
-
-Soft deletion may be omitted for append-only logging structures.
+- System observability
+- Capacity planning
+- Reliability analysis
 
 ---
 
-## 5.3 star Schema
+## 4.3 star Schema Governance
 
-The Data Warehouse schema supports:
+### Purpose
 
-- Fact tables
-- Dimension tables
-- Historical analysis
-- Power BI reporting
-
-Governance metadata should be preserved when useful for lineage and auditing.
+The star schema supports analytical workloads and data warehousing.
 
 Examples:
 
-```text
-FactWorkout
-FactApplicationLog
-DimUser
-DimDate
-DimSeverity
-DimErrorCode
-```
+- FactWorkout
+- FactApplicationLog
+- FactApiRequest
+- DimUser
+- DimDate
+- DimErrorCode
+- DimSeverity
+
+### Governance Model
+
+Governance focuses on lineage, historical accuracy, and ETL traceability rather than operational auditing.
 
 ---
 
-## 5.4 datamart Schema
+### Fact Table Standards
 
-The datamart schema represents reporting-friendly views and projections.
+Fact tables should support lineage and ETL traceability.
+
+Typical governance attributes:
+
+```sql
+load_date
+etl_batch_id
+source_system
+```
+
+Additional lineage columns may be added as warehouse requirements evolve.
+
+---
+
+### Dimension Table Standards
+
+Dimensions supporting historical analysis should implement Slowly Changing Dimension patterns when required.
+
+Typical governance attributes:
+
+```sql
+effective_start_date
+effective_end_date
+current_flag
+etl_batch_id
+```
+
+### Governance Objectives
+
+The star schema supports:
+
+- Historical reporting
+- Trend analysis
+- Slowly changing dimensions
+- Data lineage
+- Analytical consistency
+- Power BI analytics
+
+---
+
+## 4.4 datamart Schema Governance
+
+### Purpose
+
+The datamart schema exposes reporting-friendly structures for downstream consumers.
 
 Examples:
 
-```text
-vwWorkoutSummary
-vwApplicationHealth
-vwUserProgress
-vwErrorAnalysis
-```
+- vwWorkoutSummary
+- vwUserProgress
+- vwApplicationHealth
+- vwErrorAnalysis
 
-Governance columns may be hidden from reporting consumers when not required.
+### Governance Model
 
----
+Datamart objects typically consist of views and reporting projections.
 
-# 6. Reporting and View Standards
+Governance focuses on reporting correctness rather than ownership of audit columns.
 
-Reporting views shall generally expose only active records.
+### Reporting Standards
 
-Example:
+Views should:
+
+- Present current-state business information
+- Exclude soft-deleted records when appropriate
+- Simplify reporting consumption
+- Hide implementation details
+- Support stable reporting semantics
+
+### Example
 
 ```sql
 CREATE VIEW datamart.vwExercise
 AS
+
 SELECT
     exercise_id,
     exercise_name,
@@ -246,55 +306,51 @@ FROM dbo.exercise
 WHERE deleted_flag = 0;
 ```
 
-Benefits include:
+### Governance Objectives
 
-- Consistent reporting behavior
+The datamart schema supports:
+
+- Reporting consistency
 - Reduced dashboard complexity
-- Cleaner Power BI models
-- Reduced risk of reporting retired records
-
-Exceptions shall be documented.
+- Simplified Power BI models
+- Stable reporting semantics
 
 ---
 
-# 7. Reference Data Governance
+# 5. Reference Data Governance
 
 Reference data is governed data.
 
 Examples:
 
-```text
-ErrorCode
-ErrorSeverity
-NotificationType
-WorkoutType
-EventType
-```
+- ErrorCode
+- ErrorSeverity
+- WorkoutType
+- NotificationType
+- EventType
 
-Reference tables may include governance columns even when values change infrequently.
-
-Reference data supports:
+Reference tables support:
 
 - Application behavior
-- Diagnostics
 - Reporting dimensions
-- ETL processes
-- Data warehouse structures
+- Diagnostics
+- ETL processing
+- Warehouse structures
+
+Reference data should follow the same governance standards as operational data when mutable.
 
 ---
 
-## 7.1 Application Alignment
+## 5.1 Application Alignment
 
-When application enums exist for reference data:
+Where application enumerations exist, the database remains authoritative.
 
-```csharp
-ErrorSeverity
-ErrorCode
-```
+Examples:
 
-the database remains authoritative.
+- ErrorCode
+- ErrorSeverity
 
-Automated integration tests shall validate alignment between:
+Automated tests shall validate alignment between:
 
 ```text
 Application Definitions
@@ -302,71 +358,36 @@ Application Definitions
 Database Reference Data
 ```
 
-The purpose of these tests is to prevent drift between code and governed database values.
+The purpose of these tests is to prevent drift between application code and governed database values.
 
 ---
 
-# 8. Diagnostics and Execution Logging
+# 6. Governance Validation
 
-The platform shall support operational diagnostics through audit and telemetry structures.
+Governance standards should be validated through automated database testing and CI/CD pipelines.
 
 Examples include:
 
 ```text
-ApplicationLog
-ErrorLog
-SecurityLog
-ApiRequestLog
-PerformanceLog
-ProcedureExecutionLog
-JobExecutionLog
+ADR013_dbo_GovernanceValidation.sql
+ADR013_AuditValidation.sql
+ADR013_DimensionValidation.sql
+ADR013_FactValidation.sql
+ADR013_DatamartValidation.sql
+ADR013_ReferenceDataValidation.sql
 ```
 
-These structures support:
+Validation scripts should return violations and fail automated builds when governance standards are not satisfied.
 
-- Root cause analysis
-- Operational monitoring
-- Capacity planning
-- Performance tuning
-- Database health reviews
+Governance standards should be treated as executable architectural rules.
 
 ---
 
-## Example Procedure Execution Tracking
-
-```sql
-procedure_execution_log
-```
-
-Potential attributes:
-
-```sql
-execution_id
-procedure_name
-execution_start_date
-execution_end_date
-duration_ms
-rows_affected
-status
-error_code
-created_date
-```
-
-This information can support:
-
-- Index maintenance decisions
-- Query optimization
-- Performance analysis
-- Operational dashboards
-- Reliability monitoring
-
----
-
-# 9. Data Warehouse and ETL Considerations
+# 7. Data Warehouse and ETL Considerations
 
 The governance model shall support future ETL operations.
 
-Governed data structures should provide sufficient metadata to support:
+Governed structures should provide sufficient metadata to support:
 
 - Fact creation
 - Dimension creation
@@ -374,59 +395,60 @@ Governed data structures should provide sufficient metadata to support:
 - Data lineage
 - Reporting validation
 
-The platform shall favor designs that are compatible with:
+The platform architecture shall favor:
 
 ```text
-OLTP
-    ↓
-Audit & Diagnostics
-    ↓
+OLTP (dbo)
+      ↓
+Audit & Diagnostics (audit)
+      ↓
 ETL
-    ↓
-Data Warehouse
-    ↓
+      ↓
+Data Warehouse (star)
+      ↓
 Datamart
-    ↓
+      ↓
 Power BI
 ```
 
 ---
 
-# 10. Consequences
+# 8. Consequences
 
 ## Positive
 
-- Consistent auditing
+- Consistent governance strategy
+- Clear schema responsibilities
 - Improved diagnostics
-- Easier reporting
+- Better historical reporting
+- Stronger data lineage
+- Easier CI/CD validation
 - Better Power BI integration
-- Enhanced operational visibility
-- Stronger governance
-- Improved historical traceability
-- Reduced reporting complexity
+- Reduced reporting ambiguity
 
 ## Negative
 
-- Additional storage requirements
-- Additional development effort
-- More governance-related testing
+- Additional governance documentation
+- Additional validation requirements
+- Increased testing effort
 - Increased schema discipline requirements
 
 ---
 
-# 11. Related Documents
+# 9. Related Documents
 
 - ADR-001 Database Choice
 - ADR-010 Logging Severity and Verbosity Strategy
 - ADR-011 Entity Framework Core Data Access Strategy
+- ADR-012 Database Architecture
 - DataArchitecture.md
 - ReportingArchitecture.md
 - SystemArchitecture.md
 
 ---
 
-# 12. Version History
+# 10. Version History
 
 | Version | Date | Author | Description |
 |----------|------------|----------|-------------|
-| 1.0 | 2026-10-30 | Gordon | Initial governance and audit standards definition covering lifecycle tracking, soft deletes, reporting standards, diagnostics, and operational observability. |
+| 2.0 | 2026-10-31 | Gordon | Revised governance strategy from universal governance columns to schema-specific governance standards supporting operational, audit, warehouse, and reporting responsibilities. |
