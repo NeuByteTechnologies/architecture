@@ -100,7 +100,7 @@ Reporting structures shall expose consistent business semantics.
 
 # 4. Schema Governance Standards
 
-## 4.1 dbo Schema Governance
+## 4.1 dbo (Operational OLTP) Schema Governance
 
 ### Purpose
 
@@ -147,7 +147,7 @@ The dbo schema supports:
 
 ---
 
-## 4.2 audit Schema Governance
+## 4.2 audit (Diagnostics & Observability) Schema Governance
 
 ### Purpose
 
@@ -199,7 +199,7 @@ The audit schema supports:
 
 ---
 
-## 4.3 star Schema Governance
+## 4.3 star (Data Warehouse) Schema Governance
 
 ### Purpose
 
@@ -263,7 +263,7 @@ The star schema supports:
 
 ---
 
-## 4.4 datamart Schema Governance
+## 4.4 datamart (Reporting & Analytics) Schema Governance
 
 ### Purpose
 
