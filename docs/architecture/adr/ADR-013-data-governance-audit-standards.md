@@ -103,27 +103,6 @@ Reporting structures shall expose consistent business semantics.
 
 ---
 
-## 3.5 DbContext Boundary Governance
-
-Entity Framework Core DbContexts shall be aligned to ownership, security, and operational responsibilities rather than solely to physical database boundaries.
-
-A SQL Server database may contain multiple schemas that support different operational responsibilities and security requirements.
-
-Separate DbContexts provide:
-
-- Stronger separation of concerns
-- Reduced accidental coupling
-- Principle of least privilege
-- Independent security models
-- Independent connection strings
-- Future scalability of infrastructure services
-
-The existence of a schema does not automatically require a dedicated DbContext.
-
-A separate DbContext should only be introduced when a schema represents a distinct operational, security, or ownership boundary.
-
----
-
 # 4. Schema Governance Standards
 
 ## 4.1 dbo (Operational OLTP) Schema Governance
@@ -145,11 +124,11 @@ Examples:
 Mutable business entities shall normally contain:
 
 ```sql
-created_date          DATETIME2
-created_user_id       INT NULL
-last_update_date      DATETIME2
-last_update_user_id   INT NULL
-deleted_flag          BIT
+created_date         DATETIME2
+created_user_id      INT NULL
+last_update_date     DATETIME2
+last_update_user_id  INT NULL
+deleted_flag         BIT
 ```
 
 ### Optional Governance Columns
@@ -157,8 +136,8 @@ deleted_flag          BIT
 The following columns may be implemented when additional auditability is required:
 
 ```sql
-deleted_date          DATETIME2 NULL
-deleted_user_id       INT NULL
+deleted_date         DATETIME2 NULL
+deleted_user_id      INT NULL
 ```
 
 ### Governance Objectives
@@ -222,31 +201,6 @@ The audit schema supports:
 
 ---
 
-## 4.2.1 AuditDbContext
-
-The audit schema shall be accessed through a dedicated AuditDbContext.
-
-The AuditDbContext represents an infrastructure concern and supports:
-
-- Logging
-- Diagnostics
-- Observability
-- ETL monitoring
-
-Typical entities include:
-
-- ErrorLog
-- ErrorCatalog
-- Severity
-- Verbosity
-- EtlRunLog
-
-Business domain entities shall not be exposed through AuditDbContext.
-
-AuditDbContext may utilize a dedicated connection string and a dedicated SQL login restricted to the audit schema.
-
----
-
 ## 4.3 star (Data Warehouse) Schema Governance
 
 ### Purpose
@@ -284,7 +238,7 @@ Additional lineage columns may be added as warehouse requirements evolve.
 
 ### Dimension Table Standards
 
-Dimensions supporting historical analysis should implement Slowly Changing Dimension patterns when required.
+Dimensions supporting historical analysis should implement Slowly Changing Dimension (SCD) patterns when required.
 
 Typical governance attributes:
 
@@ -306,7 +260,12 @@ Surrogate Key = 0
 Business Key = Unknown
 ```
 
-This supports warehouse integrity when source values are missing or invalid.
+The unknown member supports:
+
+- Referential integrity
+- ETL reliability
+- Fact loading continuity
+- Data quality analysis
 
 ### Governance Objectives
 
@@ -374,35 +333,41 @@ The datamart schema supports:
 
 ---
 
-## 4.5 Schema Security Boundaries
+## 4.5 github (Governance & Engineering Analytics) Schema Governance
 
-Database schemas should support separation of security concerns.
+### Purpose
 
-Where practical, SQL Server roles and service accounts should be granted permissions only to the schemas required by their operational responsibilities.
+The github schema supports repository governance, SDLC reporting, engineering analytics, and portfolio management.
 
-| Schema | Typical Access |
-|----------|----------|
-| dbo | Application Runtime |
-| audit | Logging and Monitoring Services |
-| github | Governance and ETL Services |
-| star | ETL Services |
-| datamart | Reporting and Analytics Consumers |
+Examples:
 
-The architecture favors least-privilege access through schema-level permissions.
+- Repository metadata
+- Labels
+- Milestones
+- Issues
+- Pull requests
+- Workflow execution history
 
-DbContext boundaries should reinforce schema security boundaries.
+### Governance Model
 
-### Guiding Principle
+The github schema represents imported operational metadata.
 
-```text
-New Schema
-    ≠
-New DbContext
+Governance focuses on:
 
-New Security Boundary
-    =
-Candidate DbContext
-```
+- Data lineage
+- Source traceability
+- Historical analysis
+- Reporting accuracy
+
+### Governance Objectives
+
+The github schema supports:
+
+- SDLC reporting
+- Repository governance
+- Engineering analytics
+- Portfolio management
+- Historical trend reporting
 
 ---
 
@@ -474,6 +439,16 @@ ADR013_UnknownMemberValidation.sql
 ADR013_CrossSchemaAlignmentValidation.sql
 ```
 
+Examples of governance validation:
+
+- Required governance columns exist
+- Governance data types are correct
+- Reference data is present
+- Unknown dimension members exist
+- Datamart views exclude deleted records
+- Warehouse dimensions satisfy SCD requirements
+- Cross-schema data types align
+
 Validation scripts should return violations and fail automated builds when governance standards are not satisfied.
 
 Governance standards should be treated as executable architectural rules.
@@ -488,3 +463,69 @@ Governed structures should provide sufficient metadata to support:
 
 - Fact creation
 - Dimension creation
+- Historical tracking
+- Data lineage
+- Reporting validation
+
+The platform architecture shall favor:
+
+```text
+OLTP (dbo)
+      ↓
+Audit & Diagnostics (audit)
+      ↓
+ETL
+      ↓
+Data Warehouse (star)
+      ↓
+Datamart
+      ↓
+Power BI
+```
+
+---
+
+# 8. Consequences
+
+## Positive
+
+- Consistent governance strategy
+- Clear schema responsibilities
+- Improved diagnostics
+- Better historical reporting
+- Stronger data lineage
+- Easier CI/CD validation
+- Better Power BI integration
+- Reduced reporting ambiguity
+- Improved warehouse quality
+- Stronger metadata governance
+
+## Negative
+
+- Additional governance documentation
+- Additional validation requirements
+- Increased testing effort
+- Increased schema discipline requirements
+
+---
+
+# 9. Related Documents
+
+- ADR-001 Database Choice (Superseded)
+- ADR-010 Logging Severity and Verbosity Strategy
+- ADR-011 Entity Framework Core Data Access Strategy
+- ADR-012 Migration from Azure MySQL to SQL Server 2025
+- ADR-014 Security Architecture (Planned)
+- ADR-015 Entity Framework Core Context Strategy (Planned)
+- DataArchitecture.md
+- ReportingArchitecture.md
+- SystemArchitecture.md
+
+---
+
+# 10. Version History
+
+| Version | Date | Author | Description |
+|----------|----------|----------|----------|
+| 2.0 | 2026-10-31 | Gordon | Revised governance strategy from universal governance columns to schema-specific governance standards supporting operational, audit, warehouse, and reporting responsibilities. |
+| 2.1 | 2026-11-08 | Gordon | Added warehouse governance standards, unknown-member governance, github schema governance, and expanded automated governance validation requirements. |
