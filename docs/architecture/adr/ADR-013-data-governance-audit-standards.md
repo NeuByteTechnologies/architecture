@@ -1,7 +1,7 @@
 # ADR-013: Database Governance Standards
 
 **Status:** Accepted
-**Date:** 2026-10-31
+**Date:** 2026-11-08
 **Owner:** Architecture & Systems Design
 
 ---
@@ -16,6 +16,7 @@ These schemas support:
 - Diagnostics and observability
 - Data warehousing
 - Reporting and analytics
+- Governance and engineering metrics
 
 A single governance model applied uniformly across all schemas introduces unnecessary constraints and does not reflect the differing responsibilities of operational, audit, warehouse, and reporting structures.
 
@@ -82,7 +83,11 @@ Application logic shall not circumvent governance controls.
 
 Governance requirements shall be documented and validated through automated testing whenever practical.
 
-Database governance standards should be enforced through build validation, deployment validation, and continuous integration pipelines.
+Database governance standards should be enforced through:
+
+- Build validation
+- Deployment validation
+- Continuous integration pipelines
 
 ---
 
@@ -95,6 +100,27 @@ Reporting consumers should not require awareness of:
 - Lifecycle management implementation details
 
 Reporting structures shall expose consistent business semantics.
+
+---
+
+## 3.5 DbContext Boundary Governance
+
+Entity Framework Core DbContexts shall be aligned to ownership, security, and operational responsibilities rather than solely to physical database boundaries.
+
+A SQL Server database may contain multiple schemas that support different operational responsibilities and security requirements.
+
+Separate DbContexts provide:
+
+- Stronger separation of concerns
+- Reduced accidental coupling
+- Principle of least privilege
+- Independent security models
+- Independent connection strings
+- Future scalability of infrastructure services
+
+The existence of a schema does not automatically require a dedicated DbContext.
+
+A separate DbContext should only be introduced when a schema represents a distinct operational, security, or ownership boundary.
 
 ---
 
@@ -155,13 +181,11 @@ The audit schema contains diagnostics, telemetry, auditing, and observability st
 
 Examples:
 
-- ApplicationLog
 - ErrorLog
-- SecurityLog
-- PerformanceLog
-- ApiRequestLog
-- ProcedureExecutionLog
-- JobExecutionLog
+- ErrorCatalog
+- Severity
+- Verbosity
+- EtlRunLog
 
 ### Governance Model
 
@@ -177,7 +201,6 @@ Depending upon table purpose:
 created_date
 correlation_id
 reference_code
-event_type_id
 severity_id
 source_system
 ```
@@ -199,6 +222,31 @@ The audit schema supports:
 
 ---
 
+## 4.2.1 AuditDbContext
+
+The audit schema shall be accessed through a dedicated AuditDbContext.
+
+The AuditDbContext represents an infrastructure concern and supports:
+
+- Logging
+- Diagnostics
+- Observability
+- ETL monitoring
+
+Typical entities include:
+
+- ErrorLog
+- ErrorCatalog
+- Severity
+- Verbosity
+- EtlRunLog
+
+Business domain entities shall not be exposed through AuditDbContext.
+
+AuditDbContext may utilize a dedicated connection string and a dedicated SQL login restricted to the audit schema.
+
+---
+
 ## 4.3 star (Data Warehouse) Schema Governance
 
 ### Purpose
@@ -207,19 +255,18 @@ The star schema supports analytical workloads and data warehousing.
 
 Examples:
 
-- FactWorkout
-- FactApplicationLog
-- FactApiRequest
+- FactWorkoutLog
+- FactUserWeight
+- FactUserExerciseLog
+- FactUserExerciseSetLog
 - DimUser
 - DimDate
+- DimExercise
 - DimErrorCode
-- DimSeverity
 
 ### Governance Model
 
 Governance focuses on lineage, historical accuracy, and ETL traceability rather than operational auditing.
-
----
 
 ### Fact Table Standards
 
@@ -235,8 +282,6 @@ source_system
 
 Additional lineage columns may be added as warehouse requirements evolve.
 
----
-
 ### Dimension Table Standards
 
 Dimensions supporting historical analysis should implement Slowly Changing Dimension patterns when required.
@@ -246,9 +291,22 @@ Typical governance attributes:
 ```sql
 effective_start_date
 effective_end_date
-current_flag
+is_current_record
 etl_batch_id
 ```
+
+### Unknown Member Standards
+
+Dimensions should contain an Unknown member record where practical.
+
+Typical implementation:
+
+```text
+Surrogate Key = 0
+Business Key = Unknown
+```
+
+This supports warehouse integrity when source values are missing or invalid.
 
 ### Governance Objectives
 
@@ -297,7 +355,6 @@ Views should:
 ```sql
 CREATE VIEW datamart.vwExercise
 AS
-
 SELECT
     exercise_id,
     exercise_name,
@@ -317,6 +374,38 @@ The datamart schema supports:
 
 ---
 
+## 4.5 Schema Security Boundaries
+
+Database schemas should support separation of security concerns.
+
+Where practical, SQL Server roles and service accounts should be granted permissions only to the schemas required by their operational responsibilities.
+
+| Schema | Typical Access |
+|----------|----------|
+| dbo | Application Runtime |
+| audit | Logging and Monitoring Services |
+| github | Governance and ETL Services |
+| star | ETL Services |
+| datamart | Reporting and Analytics Consumers |
+
+The architecture favors least-privilege access through schema-level permissions.
+
+DbContext boundaries should reinforce schema security boundaries.
+
+### Guiding Principle
+
+```text
+New Schema
+    ≠
+New DbContext
+
+New Security Boundary
+    =
+Candidate DbContext
+```
+
+---
+
 # 5. Reference Data Governance
 
 Reference data is governed data.
@@ -324,7 +413,7 @@ Reference data is governed data.
 Examples:
 
 - ErrorCode
-- ErrorSeverity
+- Severity
 - WorkoutType
 - NotificationType
 - EventType
@@ -348,7 +437,7 @@ Where application enumerations exist, the database remains authoritative.
 Examples:
 
 - ErrorCode
-- ErrorSeverity
+- Severity
 
 Automated tests shall validate alignment between:
 
@@ -369,12 +458,20 @@ Governance standards should be validated through automated database testing and 
 Examples include:
 
 ```text
-ADR013_dbo_GovernanceValidation.sql
+ADR013_Dbo_GovernanceValidation.sql
 ADR013_AuditValidation.sql
 ADR013_DimensionValidation.sql
 ADR013_FactValidation.sql
 ADR013_DatamartValidation.sql
 ADR013_ReferenceDataValidation.sql
+```
+
+Additional validation should include:
+
+```text
+ADR013_DataTypeValidation.sql
+ADR013_UnknownMemberValidation.sql
+ADR013_CrossSchemaAlignmentValidation.sql
 ```
 
 Validation scripts should return violations and fail automated builds when governance standards are not satisfied.
@@ -391,64 +488,3 @@ Governed structures should provide sufficient metadata to support:
 
 - Fact creation
 - Dimension creation
-- Historical tracking
-- Data lineage
-- Reporting validation
-
-The platform architecture shall favor:
-
-```text
-OLTP (dbo)
-      ↓
-Audit & Diagnostics (audit)
-      ↓
-ETL
-      ↓
-Data Warehouse (star)
-      ↓
-Datamart
-      ↓
-Power BI
-```
-
----
-
-# 8. Consequences
-
-## Positive
-
-- Consistent governance strategy
-- Clear schema responsibilities
-- Improved diagnostics
-- Better historical reporting
-- Stronger data lineage
-- Easier CI/CD validation
-- Better Power BI integration
-- Reduced reporting ambiguity
-
-## Negative
-
-- Additional governance documentation
-- Additional validation requirements
-- Increased testing effort
-- Increased schema discipline requirements
-
----
-
-# 9. Related Documents
-
-- ADR-001 Database Choice
-- ADR-010 Logging Severity and Verbosity Strategy
-- ADR-011 Entity Framework Core Data Access Strategy
-- ADR-012 Database Architecture
-- DataArchitecture.md
-- ReportingArchitecture.md
-- SystemArchitecture.md
-
----
-
-# 10. Version History
-
-| Version | Date | Author | Description |
-|----------|------------|----------|-------------|
-| 2.0 | 2026-10-31 | Gordon | Revised governance strategy from universal governance columns to schema-specific governance standards supporting operational, audit, warehouse, and reporting responsibilities. |
