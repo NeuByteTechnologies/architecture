@@ -1,215 +1,447 @@
 ---
 layout: default
 title: Architecture Overview
-description: High‑level overview of the NeuByte Fitness App system architecture, documentation structure, and cross‑repo relationships.
+description: High-level overview of the NeuByte Fitness Platform architecture, documentation structure, and architectural governance model.
 ---
 
-# Architecture Overview  
-*NeuByte Fitness App — System Architecture Summary*
+# Architecture Overview
 
-This document provides a high‑level overview of the NeuByte Fitness App architecture.  
-It explains the system’s purpose, major components, data flows, and how the architecture documentation is organized across the repository.
+*NeuByte Fitness Platform - Architecture Documentation Guide*
 
-The goal of this overview is to give readers a clear understanding of **how the system works**, **how it is structured**, and **where to find deeper technical details**.
+This document provides a high-level overview of the NeuByte Fitness Platform architecture and explains how architectural knowledge is organized throughout the repository.
+
+The purpose of this document is to help readers:
+
+- Understand the overall system architecture
+- Navigate architectural documentation efficiently
+- Distinguish between architecture decisions, reference architecture, and implementation specifications
+- Locate the appropriate source of truth for architectural topics
 
 ---
 
 # 1. System Purpose
 
-The NeuByte Fitness App is a full‑stack fitness‑tracking platform designed to demonstrate NeuByte’s end‑to‑end execution of the Software Development Life Cycle (SDLC).  
-The system enables users to:
+The NeuByte Fitness Platform is an enterprise-style fitness tracking application designed to demonstrate end-to-end Software Development Life Cycle (SDLC) execution and modern .NET architecture practices.
 
-- Authenticate securely using CAPTCHA, credentials, and MFA  
-- Select and manage exercise programs  
-- Log workouts with detailed performance metrics  
-- Track body weight and personal progress  
-- View dashboards, insights, and reports  
-- Receive system notifications  
-- Access help and support content  
+The platform provides functionality for:
 
-The architecture emphasizes clarity, modularity, scalability, and maintainability.
+- Authentication and authorization
+- Exercise and workout management
+- Fitness program administration
+- Progress tracking
+- Weight tracking
+- Notifications
+- Reporting and analytics
+- Operational monitoring
+- Error handling and diagnostics
 
----
+The architecture emphasizes:
 
-# 2. High‑Level Architecture
-
-The system is composed of three major subsystems:
-
-### **1. Frontend (fitness-app repo)**
-- Static web application (HTML/CSS/JS or future C#/Blazor)
-- Implements UI workflows, navigation, and user interactions
-- Communicates with the API via HTTPS
-- Hosted via GitHub Pages
-
-### **2. Backend API (fitness-app-api repo)**
-- Stateless REST API
-- Handles authentication, program management, workout logging, notifications, and weight tracking
-- Implements business logic and validation
-- Exposes structured DTOs and API Contracts
-- Uses a cloud-hosted database for persistence
-
-### **3. Architecture Documentation (architecture repo)**
-- System context and architecture diagrams  
-- Data architecture and metadata definitions  
-- ADRs (Architecture Decision Records)  
-- NFRs (Non‑Functional Requirements)  
-- Use cases and business requirements  
-- Glossary (authoritative domain vocabulary)  
-- Standards and design principles  
-
-These three repos form the complete system.
+- Separation of concerns
+- Maintainability
+- Extensibility
+- Testability
+- Governance
+- Security
+- Observability
 
 ---
 
-# 3. Cross‑Repo Architecture Map
+# 2. Solution Architecture
 
-+-------------------------+        +---------------------------+
-|     fitness-app         | <----> |     fitness-app-api       |
-|  (Frontend/UI Layer)    |  HTTPS |   (Backend REST API)      |
-+-------------------------+        +---------------------------+
-^                               |
-|                               |
-|                               v
-|                   +---------------------------+
-|                   |   Cloud Database Layer    |
-|                   +---------------------------+
-|
-v
-+-------------------------------------------------------------+
-|                 architecture (this repo)                    |
-|  System Architecture • Data Models • ADRs • NFRs • Glossary |
-+-------------------------------------------------------------+
+The solution is organized into several logical layers:
 
+```text
+Fitness.Blazor
+        │
+        ▼
+Fitness.Application
+        │
+        ▼
+Fitness.Domain
 
-The architecture repo documents the system; it does **not** contain code.
+Fitness.Infrastructure
+        ▲
+        │
+NeuByte.ErrorHandling
+```
 
----
+## Presentation Layer
 
-# 4. Major Architectural Components
+### Fitness.Blazor
 
-### **4.1 Authentication & Security**
-- CAPTCHA → Credentials → MFA  
-- Session tokens (HTTP‑only, secure)  
-- Password hashing  
-- MFA via TOTP or Email OTP  
-- Account lockout and rate limiting  
+Responsibilities:
 
-### **4.2 Program & Workout Engine**
-- Program metadata  
-- Daily workout structure  
-- Exercise definitions  
-- Workout logging  
-- Historical performance  
-
-### **4.3 Weight Tracking**
-- Daily weight entries  
-- Trend calculations  
-- Insights and summaries  
-
-### **4.4 Notifications**
-- Unread/read state  
-- Notification types  
-- Notification center  
-
-### **4.5 Dashboard**
-- Composite data load  
-- Recent activity  
-- Progress summaries  
-- Trends and insights  
-
-### **4.6 Reporting**
-- Weekly, monthly, annual summaries  
-- Power BI integration (conceptual)  
+- User interface
+- Page routing
+- User interactions
+- Authentication experience
+- API consumption
 
 ---
 
-# 5. Documentation Structure
+## Application Layer
 
-The architecture repo is organized into the following sections:
+### Fitness.Application
 
-### **5.1 System Architecture**
-- `system-context.md`  
-- `system-architecture.md`  
-- `backend-architecture.md`  
-- `component-relationships.md`  
-- Architecture diagrams (SVG)
+Responsibilities:
 
-### **5.2 Data Architecture**
-- `data-architecture.md`  
-- Metadata definitions  
-- ERD diagrams  
-
-### **5.3 Architecture Decisions**
-- `adr/ADR-001-database-choice.md`  
-- `adr/ADR-002-authentication-method.md`  
-- `adr/ADR-003-api-style.md`  
-- `adr/ADR-004-service-boundaries.md`  
-- `adr/ADR-005-deployment-strategy.md`  
-
-### **5.4 Requirements**
-- Business Requirements (BRD)  
-- Use Cases  
-- NFRs (`nfrs.md`)  
-
-### **5.5 Glossary**
-- `glossary.md` — authoritative domain vocabulary  
-
-### **5.6 Standards**
-- UI standards  
-- Accessibility standards  
-- Coding and documentation conventions  
+- Use cases
+- Application services
+- Business workflows
+- Coordination of domain operations
+- Validation orchestration
 
 ---
 
-# 6. Key System Flows
+## Domain Layer
 
-The following sequence diagrams describe runtime behavior:
+### Fitness.Domain
 
-- Login + MFA Flow  
-- Dashboard Composite Load  
-- Program Start → Workout → Completion  
-- Workout Logging Flow  
+Responsibilities:
 
-(See `/docs/diagrams/` for SVGs.)
+- Business entities
+- Domain rules
+- Domain services
+- Business invariants
+- Core business concepts
 
----
-
-# 7. How to Navigate This Documentation
-
-If you are new to the system, follow this recommended path:
-
-1. **Start with System Context**  
-2. Review **System Architecture**  
-3. Explore **Data Architecture**  
-4. Read the **ADRs** to understand design decisions  
-5. Review **NFRs** for system‑wide constraints  
-6. Use the **Glossary** to understand domain terms  
-7. Dive into **Use Cases** and **BRD** for functional detail  
-
-This layered approach mirrors real‑world architecture review processes.
+The domain layer should remain independent of infrastructure concerns.
 
 ---
 
-# 8. Related Repositories
+## Infrastructure Layer
 
-| Repository | Purpose |
-|-----------|---------|
-| **fitness-app** | Frontend UI, workflows, navigation, and user experience |
-| **fitness-app-api** | Backend REST API, business logic, DTOs, and persistence |
-| **architecture** | System documentation, diagrams, ADRs, NFRs, glossary |
+### Fitness.Infrastructure
+
+Responsibilities:
+
+- Data persistence
+- Audit logging
+- External integrations
+- Repository implementations
+- Database access
+
+Infrastructure implements application abstractions.
+
+---
+
+## Shared Platform Components
+
+### NeuByte.ErrorHandling
+
+Responsibilities:
+
+- Error catalog management
+- Exception handling
+- Correlation tracking
+- Severity classification
+- Verbosity classification
+- Standardized error responses
+
+This package is intended to be reusable across multiple applications.
+
+---
+
+# 3. Documentation Structure
+
+The architecture repository organizes documentation into three primary categories.
+
+---
+
+## 3.1 Architecture Decision Records (ADRs)
+
+Architecture Decision Records capture significant architectural decisions and their supporting rationale.
+
+An ADR answers:
+
+- What decision was made?
+- Why was the decision made?
+- What alternatives were considered?
+- What are the consequences of that decision?
+
+Examples:
+
+| ADR | Topic |
+|-------|-------|
+| ADR-007 | Centralized Diagnostic Logging |
+| ADR-008 | Logging Persistence Hierarchy |
+| ADR-009 | Diagnostic Information Consumer Model |
+| ADR-010 | Severity and Verbosity Strategy |
+| ADR-011 | Entity Framework Core Data Access Strategy |
+| ADR-012 | SQL Server Platform Selection |
+| ADR-013 | Database Governance Standards |
+| ADR-014 | Security Architecture |
+| ADR-015 | Entity Framework Core Context Strategy |
+
+ADRs represent architectural decisions and should be revised only through formal architectural review.
+
+---
+
+## 3.2 Architecture Reference Documents
+
+Reference architecture documents describe the current architecture of the platform.
+
+These documents answer:
+
+> What does the architecture look like today?
+
+Examples:
+
+- system-architecture.md
+- backend-architecture.md
+- component-relationships.md
+- data-architecture.md
+- system-context.md
+
+Reference documents evolve as the architecture evolves.
+
+---
+
+## 3.3 Specifications
+
+Specifications define implementation details, standards, contracts, and technical requirements.
+
+These documents answer:
+
+> How is something implemented?
+
+Examples:
+
+- api-overview.md
+- authentication-flow-jwt.md
+- error-mapping-table-specification.md
+- non-functional-requirements.md
+
+Specifications may change more frequently than architecture documents.
+
+---
+
+# 4. Architectural Domains
+
+The architecture documentation is organized into several architectural domains.
+
+## Security
+
+Primary Documents:
+
+- ADR-014 Security Architecture
+- authentication-flow-jwt.md
+- system-architecture.md
+
+Topics:
+
+- Authentication
+- Authorization
+- RBAC
+- MFA
+- Service accounts
+- Secret management
+
+---
+
+## Data Architecture
+
+Primary Documents:
+
+- ADR-012 SQL Server Platform Decision
+- ADR-013 Database Governance Standards
+- data-architecture.md
+
+Topics:
+
+- SQL Server
+- Database schemas
+- Data governance
+- Warehousing
+- Reporting
+- Data lineage
+
+---
+
+## Application Architecture
+
+Primary Documents:
+
+- ADR-011 Entity Framework Core Data Access Strategy
+- ADR-015 Entity Framework Core Context Strategy
+- backend-architecture.md
+- component-relationships.md
+
+Topics:
+
+- Application layering
+- Dependency boundaries
+- Repository patterns
+- DbContext architecture
+- Infrastructure boundaries
+
+---
+
+## Error Handling and Observability
+
+Primary Documents:
+
+- ADR-007 Centralized Diagnostic Logging
+- ADR-008 Logging Persistence Hierarchy
+- ADR-009 Diagnostic Information Consumer Model
+- ADR-010 Severity and Verbosity Strategy
+
+Topics:
+
+- Logging
+- Diagnostics
+- Correlation identifiers
+- Error catalogs
+- Severity classification
+- Observability
+
+---
+
+## System Architecture
+
+Primary Documents:
+
+- system-context.md
+- system-architecture.md
+- architecture-philosophy.md
+
+Topics:
+
+- System boundaries
+- Architectural principles
+- Major components
+- External integrations
+- Architectural vision
+
+---
+
+# 5. Recommended Reading Order
+
+For new contributors, reviewers, or hiring managers:
+
+1. Read this document
+2. Review system-context.md
+3. Review system-architecture.md
+4. Review data-architecture.md
+5. Review relevant ADRs
+6. Review specifications for implementation details
+
+This progression moves from strategic architecture toward implementation detail.
+
+---
+
+# 6. Architecture Governance
+
+The architecture documentation follows the principle:
+
+```text
+Decision
+    ↓
+Architecture
+    ↓
+Specification
+    ↓
+Implementation
+```
+
+Where:
+
+```text
+ADR
+    → Explains Why
+
+Reference Architecture
+    → Explains What
+
+Specification
+    → Explains How
+
+Code
+    → Implements It
+```
+
+Documentation should avoid duplicating information across document types whenever practical.
+
+When conflicts exist:
+
+```text
+ADR
+    takes precedence over
+Reference Architecture
+
+Reference Architecture
+    takes precedence over
+Specifications
+
+Specifications
+    take precedence over
+Implementation Details
+```
+
+Architectural changes should be reflected in all affected documentation layers.
+
+---
+
+# 7. Architecture Documentation Map
+
+| Topic | Primary Document |
+|---------|---------|
+| Logging Architecture | ADR-007, ADR-008, ADR-010 |
+| Error Handling | Error Handling Documentation, ADR-007 through ADR-010 |
+| Security | ADR-014 |
+| SQL Server Platform | ADR-012 |
+| Database Governance | ADR-013 |
+| EF Core Data Access | ADR-011 |
+| DbContext Strategy | ADR-015 |
+| System Design | system-architecture.md |
+| Data Design | data-architecture.md |
+| Backend Design | backend-architecture.md |
+| Authentication | authentication-flow-jwt.md |
+| APIs | api-overview.md |
+| Non-Functional Requirements | non-functional-requirements.md |
+
+---
+
+# 8. Related Documents
+
+## ADRs
+
+- ADR-007 Centralized Diagnostic Logging
+- ADR-008 Logging Persistence Hierarchy
+- ADR-009 Diagnostic Information Consumer Model
+- ADR-010 Severity and Verbosity Strategy
+- ADR-011 Entity Framework Core Data Access Strategy
+- ADR-012 SQL Server Platform Decision
+- ADR-013 Database Governance Standards
+- ADR-014 Security Architecture
+- ADR-015 Entity Framework Core Context Strategy
+
+## Reference Architecture
+
+- system-context.md
+- system-architecture.md
+- backend-architecture.md
+- component-relationships.md
+- data-architecture.md
+- architecture-philosophy.md
+
+## Specifications
+
+- api-overview.md
+- authentication-flow-jwt.md
+- error-mapping-table-specification.md
+- non-functional-requirements.md
 
 ---
 
 # 9. Summary
 
-This Architecture Overview provides the high‑level understanding needed to navigate the NeuByte Fitness App system.  
-It connects the dots between:
+The NeuByte Fitness Platform documentation is organized around clear architectural responsibilities:
 
-- business requirements  
-- architectural decisions  
-- system components  
-- data structures  
-- runtime flows  
-- cross‑repo relationships  
+- **ADRs** record architectural decisions.
+- **Reference Architecture Documents** describe the current architecture.
+- **Specifications** define implementation requirements.
+- **Source Code** implements the architecture.
 
-Use this document as your starting point for exploring the full architecture.
+Together these artifacts provide traceability from architectural decision through implementation and support long-term system maintainability, governance, and evolution.
