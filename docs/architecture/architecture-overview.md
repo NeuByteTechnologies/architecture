@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Architecture Overview
-description: High-level overview of the NeuByte Fitness Platform architecture, documentation structure, and architectural governance model.
+description: High-level overview of the NeuByte Fitness Platform architecture, documentation structure, and architecture governance model.
 ---
 
 # Architecture Overview
@@ -14,8 +14,9 @@ The purpose of this document is to help readers:
 
 - Understand the overall system architecture
 - Navigate architectural documentation efficiently
-- Distinguish between architecture decisions, reference architecture, and implementation specifications
-- Locate the appropriate source of truth for architectural topics
+- Distinguish between architecture decisions, reference architecture, standards, and implementation specifications
+- Locate the authoritative source of truth for architectural topics
+- Understand repository documentation governance
 
 ---
 
@@ -106,7 +107,7 @@ Responsibilities:
 - Business invariants
 - Core business concepts
 
-The domain layer should remain independent of infrastructure concerns.
+The Domain layer should remain independent of infrastructure concerns.
 
 ---
 
@@ -143,13 +144,176 @@ This package is intended to be reusable across multiple applications.
 
 ---
 
-# 3. Documentation Structure
+# 3. Repository Documentation Organization
 
-The architecture repository organizes documentation into three primary categories.
+The architecture repository is organized by documentation responsibility.
+
+```text
+docs/
+├── architecture/
+│   ├── adr/
+│   └── error-handling/
+│
+├── data/
+├── diagrams/
+│   └── png/
+│
+├── glossary/
+├── standards/
+└── use-cases/
+```
+
+Each folder serves a distinct purpose and should contain a specific category of documentation.
 
 ---
 
-## 3.1 Architecture Decision Records (ADRs)
+## 3.1 architecture/
+
+Contains architecture-focused documentation.
+
+Examples:
+
+- Architecture Overview
+- Architecture Index
+- System Architecture
+- Backend Architecture
+- Component Relationships
+- Architecture Philosophy
+
+These documents describe the structure and design of the platform.
+
+---
+
+## 3.2 architecture/adr/
+
+Contains Architecture Decision Records (ADRs).
+
+ADRs document significant architectural decisions and the rationale behind those decisions.
+
+ADRs answer:
+
+- What decision was made?
+- Why was the decision made?
+- What alternatives were considered?
+- What are the consequences of the decision?
+
+Examples:
+
+- ADR-007 Centralized Diagnostic Logging
+- ADR-008 Logging Persistence Hierarchy
+- ADR-009 Diagnostic Information Consumer Model
+- ADR-010 Diagnostic Severity and Verbosity
+- ADR-011 Entity Framework Core Data Access Strategy
+- ADR-012 Migration from Azure MySQL to SQL Server 2025
+- ADR-013 Database Governance Standards
+- ADR-014 Security Architecture
+- ADR-015 Entity Framework Core Context Strategy
+
+ADRs preserve architectural history and should be revised only through formal architectural review.
+
+---
+
+## 3.3 architecture/error-handling/
+
+Contains detailed architecture and specifications related to the NeuByte Error Handling framework.
+
+Examples include:
+
+- Error handling architecture
+- Error catalog design
+- Logging architecture
+- Correlation ID strategy
+- Exception handling flows
+- Error mapping specifications
+
+---
+
+## 3.4 data/
+
+Contains data architecture documentation.
+
+Examples:
+
+- Data Architecture
+- Database Models
+- Data Governance
+- Reporting Models
+- Warehousing Documentation
+- ETL Documentation
+
+Topics include:
+
+- Operational data
+- Audit data
+- Reference data
+- Data governance
+- Warehousing
+- Reporting
+
+---
+
+## 3.5 diagrams/
+
+Contains architecture diagrams and supporting visual artifacts.
+
+Examples:
+
+- System Context Diagrams
+- Component Diagrams
+- Sequence Diagrams
+- Data Flow Diagrams
+- Entity Relationship Diagrams (ERDs)
+
+Diagram source files should be maintained whenever practical.
+
+---
+
+## 3.6 glossary/
+
+Contains authoritative business and technical vocabulary.
+
+The glossary serves as the source of truth for terminology used throughout the platform.
+
+---
+
+## 3.7 standards/
+
+Contains standards and governance documentation.
+
+Examples:
+
+- Coding Standards
+- Documentation Standards
+- Naming Standards
+- Governance Standards
+- Design Standards
+
+Standards define required practices but do not record architectural decisions.
+
+---
+
+## 3.8 use-cases/
+
+Contains business-focused requirements and workflow documentation.
+
+Examples:
+
+- User Stories
+- Use Cases
+- Process Flows
+- Functional Scenarios
+
+These documents describe desired system behavior rather than implementation.
+
+---
+
+# 4. Documentation Classification
+
+Documentation within the repository is organized into four primary categories.
+
+---
+
+## 4.1 Architecture Decision Records (ADRs)
 
 Architecture Decision Records capture significant architectural decisions and their supporting rationale.
 
@@ -158,29 +322,20 @@ An ADR answers:
 - What decision was made?
 - Why was the decision made?
 - What alternatives were considered?
-- What are the consequences of that decision?
+- What are the consequences of the decision?
 
 Examples:
 
-| ADR | Topic |
-|-------|-------|
-| ADR-007 | Centralized Diagnostic Logging |
-| ADR-008 | Logging Persistence Hierarchy |
-| ADR-009 | Diagnostic Information Consumer Model |
-| ADR-010 | Severity and Verbosity Strategy |
-| ADR-011 | Entity Framework Core Data Access Strategy |
-| ADR-012 | SQL Server Platform Selection |
-| ADR-013 | Database Governance Standards |
-| ADR-014 | Security Architecture |
-| ADR-015 | Entity Framework Core Context Strategy |
-
-ADRs represent architectural decisions and should be revised only through formal architectural review.
+- ADR-012 SQL Server Platform Decision
+- ADR-013 Database Governance Standards
+- ADR-014 Security Architecture
+- ADR-015 Entity Framework Core Context Strategy
 
 ---
 
-## 3.2 Architecture Reference Documents
+## 4.2 Architecture Reference Documents
 
-Reference architecture documents describe the current architecture of the platform.
+Reference Architecture documents describe the current architecture of the platform.
 
 These documents answer:
 
@@ -190,17 +345,36 @@ Examples:
 
 - system-architecture.md
 - backend-architecture.md
-- component-relationships.md
 - data-architecture.md
+- component-relationships.md
 - system-context.md
 
-Reference documents evolve as the architecture evolves.
+Reference documents evolve as the system evolves.
 
 ---
 
-## 3.3 Specifications
+## 4.3 Standards
 
-Specifications define implementation details, standards, contracts, and technical requirements.
+Standards define required practices, conventions, and governance rules.
+
+These documents answer:
+
+> What rules must be followed?
+
+Examples:
+
+- Coding Standards
+- Documentation Standards
+- Naming Standards
+- Governance Standards
+
+Standards may be organizational, architectural, or technical in nature.
+
+---
+
+## 4.4 Specifications
+
+Specifications define implementation details, contracts, mappings, and technical requirements.
 
 These documents answer:
 
@@ -217,9 +391,11 @@ Specifications may change more frequently than architecture documents.
 
 ---
 
-# 4. Architectural Domains
+# 5. Architectural Domains
 
 The architecture documentation is organized into several architectural domains.
+
+---
 
 ## Security
 
@@ -253,7 +429,7 @@ Topics:
 - SQL Server
 - Database schemas
 - Data governance
-- Warehousing
+- Data warehousing
 - Reporting
 - Data lineage
 
@@ -285,13 +461,13 @@ Primary Documents:
 - ADR-007 Centralized Diagnostic Logging
 - ADR-008 Logging Persistence Hierarchy
 - ADR-009 Diagnostic Information Consumer Model
-- ADR-010 Severity and Verbosity Strategy
+- ADR-010 Diagnostic Severity and Verbosity
 
 Topics:
 
 - Logging
 - Diagnostics
-- Correlation identifiers
+- Correlation tracking
 - Error catalogs
 - Severity classification
 - Observability
@@ -316,29 +492,16 @@ Topics:
 
 ---
 
-# 5. Recommended Reading Order
-
-For new contributors, reviewers, or hiring managers:
-
-1. Read this document
-2. Review system-context.md
-3. Review system-architecture.md
-4. Review data-architecture.md
-5. Review relevant ADRs
-6. Review specifications for implementation details
-
-This progression moves from strategic architecture toward implementation detail.
-
----
-
 # 6. Architecture Governance
 
-The architecture documentation follows the principle:
+The architecture repository follows a layered documentation model:
 
 ```text
 Decision
     ↓
 Architecture
+    ↓
+Standard
     ↓
 Specification
     ↓
@@ -354,6 +517,9 @@ ADR
 Reference Architecture
     → Explains What
 
+Standards
+    → Define Rules
+
 Specification
     → Explains How
 
@@ -363,7 +529,11 @@ Code
 
 Documentation should avoid duplicating information across document types whenever practical.
 
-When conflicts exist:
+---
+
+## 6.1 Document Precedence
+
+When conflicts exist, precedence shall be determined as follows:
 
 ```text
 ADR
@@ -372,6 +542,10 @@ Reference Architecture
 
 Reference Architecture
     takes precedence over
+Standards
+
+Standards
+    take precedence over
 Specifications
 
 Specifications
@@ -383,42 +557,89 @@ Architectural changes should be reflected in all affected documentation layers.
 
 ---
 
-# 7. Architecture Documentation Map
+## 6.2 Creating New Documents
 
-| Topic | Primary Document |
-|---------|---------|
-| Logging Architecture | ADR-007, ADR-008, ADR-010 |
-| Error Handling | Error Handling Documentation, ADR-007 through ADR-010 |
-| Security | ADR-014 |
-| SQL Server Platform | ADR-012 |
-| Database Governance | ADR-013 |
-| EF Core Data Access | ADR-011 |
-| DbContext Strategy | ADR-015 |
-| System Design | system-architecture.md |
-| Data Design | data-architecture.md |
-| Backend Design | backend-architecture.md |
-| Authentication | authentication-flow-jwt.md |
-| APIs | api-overview.md |
-| Non-Functional Requirements | non-functional-requirements.md |
+Before creating a new document, determine the document's purpose.
+
+### Create an ADR When
+
+- A significant architectural decision is being made
+- Architectural alternatives have been evaluated
+- Long-term rationale should be preserved
+- The decision impacts future architecture
+
+### Create a Reference Architecture Document When
+
+- Describing current system structure
+- Describing component relationships
+- Describing architectural boundaries
+- Describing data flows or integrations
+
+### Create a Standard When
+
+- Defining rules or conventions
+- Defining governance requirements
+- Defining naming standards
+- Defining development practices
+
+### Create a Specification When
+
+- Defining implementation details
+- Defining mappings or transformations
+- Defining contracts or interfaces
+- Defining technical implementation requirements
+
+New ADRs should not be used to document implementation details.
 
 ---
 
-# 8. Related Documents
+# 7. Architecture Repository Map
 
-## ADRs
+| Folder | Purpose |
+|----------|----------|
+| architecture/adr | Architecture Decision Records |
+| architecture/error-handling | Error Handling Architecture |
+| data | Data Architecture |
+| diagrams | Architecture Diagrams |
+| glossary | Business and Technical Vocabulary |
+| standards | Standards and Governance |
+| use-cases | Business Requirements and Workflows |
 
-- ADR-007 Centralized Diagnostic Logging
-- ADR-008 Logging Persistence Hierarchy
-- ADR-009 Diagnostic Information Consumer Model
-- ADR-010 Severity and Verbosity Strategy
-- ADR-011 Entity Framework Core Data Access Strategy
-- ADR-012 SQL Server Platform Decision
-- ADR-013 Database Governance Standards
-- ADR-014 Security Architecture
-- ADR-015 Entity Framework Core Context Strategy
+---
 
-## Reference Architecture
+## Document Classification Summary
 
+| Document Type | Purpose |
+|----------|----------|
+| ADR | Explains Why |
+| Reference Architecture | Explains What |
+| Standard | Defines Rules |
+| Specification | Explains How |
+| Source Code | Implements the Solution |
+
+---
+
+# 8. Recommended Reading Order
+
+For new contributors, reviewers, architects, or hiring managers:
+
+1. Read this document
+2. Review system-context.md
+3. Review system-architecture.md
+4. Review data-architecture.md
+5. Review applicable ADRs
+6. Review standards
+7. Review implementation specifications
+
+This progression moves from strategic architecture toward implementation detail.
+
+---
+
+# 9. Related Documents
+
+## Architecture
+
+- architecture-index.md
 - system-context.md
 - system-architecture.md
 - backend-architecture.md
@@ -426,7 +647,23 @@ Architectural changes should be reflected in all affected documentation layers.
 - data-architecture.md
 - architecture-philosophy.md
 
-## Specifications
+### ADRs
+
+- ADR-007 Centralized Diagnostic Logging
+- ADR-008 Logging Persistence Hierarchy
+- ADR-009 Diagnostic Information Consumer Model
+- ADR-010 Diagnostic Severity and Verbosity
+- ADR-011 Entity Framework Core Data Access Strategy
+- ADR-012 Migration from Azure MySQL to SQL Server 2025
+- ADR-013 Database Governance Standards
+- ADR-014 Security Architecture
+- ADR-015 Entity Framework Core Context Strategy
+
+### Standards
+
+- standards/
+
+### Specifications
 
 - api-overview.md
 - authentication-flow-jwt.md
@@ -435,13 +672,14 @@ Architectural changes should be reflected in all affected documentation layers.
 
 ---
 
-# 9. Summary
+# 10. Summary
 
-The NeuByte Fitness Platform documentation is organized around clear architectural responsibilities:
+The NeuByte Fitness Platform documentation repository is organized around distinct documentation responsibilities.
 
-- **ADRs** record architectural decisions.
-- **Reference Architecture Documents** describe the current architecture.
-- **Specifications** define implementation requirements.
-- **Source Code** implements the architecture.
+- **ADRs** explain architectural decisions.
+- **Reference Architecture Documents** describe system structure.
+- **Standards** define required rules and practices.
+- **Specifications** define implementation details.
+- **Source Code** implements the solution.
 
-Together these artifacts provide traceability from architectural decision through implementation and support long-term system maintainability, governance, and evolution.
+Together these artifacts provide traceability from architectural intent through implementation and support long-term maintainability, governance, and architectural evolution.
